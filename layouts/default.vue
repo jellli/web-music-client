@@ -2,14 +2,20 @@
   <div>
     <Navbar />
     <nuxt />
+    <foot />
+    <player />
   </div>
 </template>
 
 <script>
 import Navbar from "@/components/Navbar.vue";
+import foot from "@/components/foot.vue";
+import player from "@/components/player.vue";
 export default {
   components: {
-    Navbar
+    Navbar,
+    foot,
+    player
   }
 };
 </script>
@@ -46,7 +52,7 @@ a {
 }
 .restrainer {
   padding: 40px 0;
-  width: 80%;
+  width: 70%;
   margin: 0 auto;
 }
 </style>
