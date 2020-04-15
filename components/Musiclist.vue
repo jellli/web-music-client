@@ -41,6 +41,7 @@ export default {
     font-size: 20px;
   }
   .list-content {
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(6, 180px);
     gap: 20px 0;
