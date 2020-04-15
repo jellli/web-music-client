@@ -14,7 +14,13 @@ export default {
         content: process.env.npm_package_description || ""
       }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    link: [
+      {
+        rel: "stylesheet",
+        href: "https://cdn.bootcss.com/font-awesome/5.13.0/css/all.css"
+      }
+    ]
   },
   /*
    ** Customize the progress-bar color
@@ -30,7 +36,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ["@/plugins/helpers.js"],
   /*
    ** Nuxt.js dev-modules
    */

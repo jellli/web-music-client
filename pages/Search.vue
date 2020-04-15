@@ -2,8 +2,13 @@
   <div class="search restrainer">
     <div class="search-bar">
       <form>
-        <input type="text" placeholder="搜索" />
-        <label for="submit">
+        <input
+          type="text"
+          placeholder="搜索"
+          v-model="keyword"
+          @keydown.enter="search"
+        />
+        <label for="submit" @click="search">
           <svg
             t="1586781861453"
             class="icon"
@@ -21,18 +26,79 @@
             ></path>
           </svg>
         </label>
-        <input type="submit" id="submit" style="display:none;" />
+        <input type="submit" style="display:none;" />
       </form>
+    </div>
+    <div class="search-result">
+      <bestMatch v-if="this.result.length > 0" :bestMatch="result[0]" />
+      <searchList v-if="this.result.length > 0" :list="result.slice(1)" />
+      <hotKeyword
+        :hotKeyword="this.hotKeyword"
+        :searchFunc="setKeyword"
+        v-if="this.result.length == 0"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import bestMatch from "@/components/bestMatch";
+import searchList from "@/components/searchList";
+import hotKeyword from "@/components/hotKeyword";
 export default {
+  components: {
+    bestMatch,
+    searchList,
+    hotKeyword
+  },
   head() {
     return {
       title: "搜索"
     };
+  },
+  data() {
+    return {
+      keyword: "",
+      result: []
+    };
+  },
+  methods: {
+    setKeyword(keyword) {
+      this.keyword = keyword;
+      this.search();
+    },
+    async search(event) {
+      if (event) {
+        event.preventDefault();
+      }
+      const res = await this.$axios.get(
+        `${process.env.MUSIC_API_URL}/search?keywords=${this.keyword}&limit=10`
+      );
+      const temp = [];
+      res.data.result.songs.map(async item => {
+        const id = item.id;
+        const name = item.name;
+        const artist = item.artists[0].name;
+        const album_id = item.album.id;
+        const album_detial = await this.$axios.get(
+          `${process.env.MUSIC_API_URL}/album?id=${album_id}`
+        );
+        const album_pic = album_detial.data.songs[0].al.picUrl;
+        temp.push({
+          id,
+          name,
+          artist,
+          album_pic
+        });
+      });
+      this.result = temp;
+    }
+  },
+  async asyncData({ $axios }) {
+    const BASE_URL = process.env.MUSIC_API_URL;
+    const hot_keyword = await $axios.$get(`${BASE_URL}/search/hot`);
+    const hotKeyword = hot_keyword.result.hots;
+    return { hotKeyword };
   }
 };
 </script>
@@ -75,5 +141,12 @@ export default {
     background: #282828;
     font-size: 1.2rem;
   }
+}
+.search-result {
+  width: 60%;
+  padding: 40px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  // align-self: start;
 }
 </style>
