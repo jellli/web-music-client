@@ -9,12 +9,13 @@
           {{ song.name }}
         </div>
         <div class="songs-list-item-subtitle">
-          <a
+          <nuxt-link
             v-for="artist in song.artists"
             :key="artist.id"
-            :href="`${artist.id}`"
-            >{{ artist.name }}</a
+            :to="`/artist/${artist.id}`"
           >
+            {{ artist.name }}
+          </nuxt-link>
         </div>
       </div>
       <div class="music-ctrl">

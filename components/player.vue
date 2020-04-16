@@ -1,12 +1,57 @@
 <template>
-  <audio :src="this.playUrl" id="player"></audio>
+  <div class="player">
+    <audio :src="this.playUrl" id="player"></audio>
+    <div class="player-song-data" v-if="JSON.stringify(data) !== '{}'">
+      <div class="player-song-cover">
+        <img :src="data.al.picUrl" />
+      </div>
+      <div>
+        <div class="player-song-name">
+          <nuxt-link :to="`/song/${data.id}`">{{ data.name }}</nuxt-link>
+        </div>
+        <div class="player-song-artists">
+          <nuxt-link
+            :to="`/artist/${artist.id}`"
+            v-for="(artist, index) in data.ar"
+            :key="index"
+          >
+            {{ artist.name }}
+          </nuxt-link>
+        </div>
+      </div>
+    </div>
+    <div class="song-fake-data" v-else></div>
+    <div class="song-ctrl">
+      <i class="fas fa-backward"></i>
+      <i
+        class="fas fa-play-circle"
+        @click="play"
+        v-if="getIsPlaying === false"
+      ></i>
+      <i class="fas fa-pause-circle" @click="play" v-else></i>
+      <i class="fas fa-forward"></i>
+    </div>
+    <div class="song-nav"></div>
+  </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      playUrl: ""
+      playUrl: "",
+      data: {}
     };
+  },
+  methods: {
+    play() {
+      if (this.getIsPlaying === true) {
+        player.pause();
+        this.$store.commit("togglePlayingState");
+      } else {
+        player.play();
+        this.$store.commit("togglePlayingState");
+      }
+    }
   },
   computed: {
     getPlayId() {
@@ -22,6 +67,10 @@ export default {
         const playUrl = await this.$axios.get(
           `${process.env.MUSIC_API_URL}/song/url?id=${this.$store.state.currentId}`
         );
+        const detial = await this.$axios.get(
+          `${process.env.MUSIC_API_URL}/song/detail?ids=${this.$store.state.currentId}`
+        );
+        this.data = detial.data.songs[0];
         if (playUrl.data.length == 0) {
           this.playUrl = "";
         } else {
@@ -44,6 +93,64 @@ export default {
   },
   mounted() {
     const player = document.getElementById("player");
+    const playbtn = document.getElementById("playbtn");
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.player {
+  width: 100vw;
+  height: 72px;
+  position: fixed;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: #030306 solid 1px;
+  background: #282828;
+}
+.player-song-data {
+  display: flex;
+  align-items: center;
+}
+.player-song-cover {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  margin-right: 20px;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+.player-song-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  a {
+    text-overflow: ellipsis;
+    font-size: 1.2rem;
+  }
+}
+.player-song-artists {
+  a {
+    margin-right: 10px;
+    color: #939393;
+  }
+}
+.song-ctrl {
+  height: 72px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  i {
+    color: #b3b3b3;
+    margin: 0 20px;
+    cursor: pointer;
+    &:nth-child(2) {
+      font-size: 2rem;
+    }
+  }
+}
+</style>
