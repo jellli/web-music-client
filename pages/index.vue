@@ -45,10 +45,13 @@ export default {
     let hotMusic = [];
 
     artists_list.artists.map(item => {
+      const id = item.id;
       const title = item.name;
       const subtitle = item.trans;
       const picUrl = item.picUrl + "?param=150y150";
       artistsList.push({
+        id,
+        baseUrl: "artist",
         title,
         subtitle,
         picUrl

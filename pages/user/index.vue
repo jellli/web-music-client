@@ -18,7 +18,11 @@
         </ul>
       </div>
     </div>
-    <Musiclist />
+    <Musiclist
+      title="你喜欢的音乐"
+      subtitle="重复聆听你的挚爱"
+      :content="hotMusic.slice(0, 6)"
+    />
   </div>
 </template>
 
@@ -32,6 +36,25 @@ export default {
     return {
       title: "个人主页"
     };
+  },
+  async asyncData({ $axios }) {
+    const BASE_URL = process.env.MUSIC_API_URL;
+    const hot_music = await $axios.$get(`${BASE_URL}/top/list?idx=8`);
+
+    let hotMusic = [];
+
+    hot_music.playlist.tracks.map(item => {
+      const title = item.name;
+      const subtitle = item.ar[0].name;
+      const picUrl = item.al.picUrl;
+      hotMusic.push({
+        title,
+        subtitle,
+        picUrl
+      });
+    });
+
+    return { hotMusic };
   }
 };
 </script>
