@@ -17,13 +17,35 @@
           >
         </div>
       </div>
+      <div class="music-ctrl">
+        <i
+          class="fas fa-pause"
+          v-if="currentId === song.id && isPlaying"
+          @click="play(song.id)"
+        ></i>
+        <i class="fas fa-play" @click="play(song.id)" v-else></i>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["songs"]
+  props: ["songs"],
+  computed: {
+    currentId() {
+      return this.$store.state.currentId;
+    },
+    isPlaying() {
+      return this.$store.state.isPlaying;
+    }
+  },
+  methods: {
+    play(id) {
+      this.$store.commit("setCurrentId", id);
+      this.$store.commit("togglePlayingState");
+    }
+  }
 };
 </script>
 
@@ -32,6 +54,7 @@ export default {
   width: 100%;
   .songs-list-item {
     display: flex;
+    align-items: center;
     padding: 10px 20px;
     transition: all ease 0.3s;
     &:hover {
@@ -56,6 +79,9 @@ export default {
       color: #939393;
       margin-right: 10px;
     }
+  }
+  .music-ctrl {
+    margin-left: auto;
   }
 }
 </style>

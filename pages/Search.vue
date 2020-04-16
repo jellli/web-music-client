@@ -78,16 +78,21 @@ export default {
       res.data.result.songs.map(async item => {
         const id = item.id;
         const name = item.name;
-        const artist = item.artists[0].name;
+        const artist_name = item.artists[0].name;
+        const artist_id = item.artists[0].id;
         const album_id = item.album.id;
         const album_detial = await this.$axios.get(
           `${process.env.MUSIC_API_URL}/album?id=${album_id}`
         );
-        const album_pic = album_detial.data.songs[0].al.picUrl;
+        const album_pic =
+          album_detial.data.songs[0].al.picUrl + "?param=150y150";
         temp.push({
           id,
           name,
-          artist,
+          artist: {
+            id: artist_id,
+            name: artist_name
+          },
           album_pic
         });
       });

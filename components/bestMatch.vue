@@ -10,7 +10,9 @@
         {{ bestMatch.name }}
       </div>
       <div class="song-artist">
-        {{ bestMatch.artist }}
+        <nuxt-link :to="`/artist/${bestMatch.artist.id}`">
+          {{ bestMatch.artist.name }}
+        </nuxt-link>
       </div>
       <div class="music-ctrl">
         <i
@@ -65,6 +67,8 @@ export default {
   font-size: 1.2rem;
 }
 .song-artist {
-  color: #939393;
+  a {
+    color: #939393;
+  }
 }
 </style>

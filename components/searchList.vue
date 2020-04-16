@@ -6,7 +6,9 @@
         <td><img :src="item.album_pic" /></td>
         <td>
           <span>{{ item.name }}</span>
-          <span>{{ item.artist }}</span>
+          <nuxt-link :to="`/artist/${item.artist.id}`">
+            {{ item.artist.name }}
+          </nuxt-link>
         </td>
         <td>
           <div class="music-ctrl">
@@ -60,11 +62,9 @@ td {
   }
   &:nth-child(2) {
     padding: 0 10px;
-    span {
+    a {
       display: block;
-      &:nth-child(2) {
-        color: #939393;
-      }
+      color: #939393;
     }
   }
   .music-ctrl {

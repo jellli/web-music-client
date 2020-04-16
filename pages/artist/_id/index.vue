@@ -23,11 +23,11 @@ export default {
       `${process.env.MUSIC_API_URL}/artists?id=${params.id}`
     );
     const name = detial.data.artist.name;
-    const picUrl = detial.data.artist.picUrl;
+    const picUrl = detial.data.artist.picUrl + "?param=300y300";
     const hot_songs = detial.data.hotSongs;
     const hotSongs = [];
     hot_songs.map(item => {
-      const album_pic = item.al.picUrl;
+      const album_pic = item.al.picUrl + "?param=50y50";
       const id = item.id;
       const name = item.name;
       const artists = [];

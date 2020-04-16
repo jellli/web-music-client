@@ -4,7 +4,7 @@
       <img :src="picUrl" />
     </div>
     <div class="music-title">
-      <a :href="`${baseUrl}/${id}`" v-if="baseUrl">{{ title }}</a>
+      <nuxt-link :to="`${baseUrl}/${id}`" v-if="baseUrl">{{ title }}</nuxt-link>
       <span v-else>
         {{ title }}
       </span>
