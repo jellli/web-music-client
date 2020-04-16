@@ -1,0 +1,61 @@
+<template>
+  <div class="songs-list">
+    <div class="songs-list-item" v-for="song in songs" :key="song.id">
+      <div class="songs-list-item-pic">
+        <img :src="song.album_pic" />
+      </div>
+      <div>
+        <div class="songs-list-item-title">
+          {{ song.name }}
+        </div>
+        <div class="songs-list-item-subtitle">
+          <a
+            v-for="artist in song.artists"
+            :key="artist.id"
+            :href="`${artist.id}`"
+            >{{ artist.name }}</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: ["songs"]
+};
+</script>
+
+<style lang="scss" scoped>
+.songs-list {
+  width: 100%;
+  .songs-list-item {
+    display: flex;
+    padding: 10px 20px;
+    transition: all ease 0.3s;
+    &:hover {
+      background: rgba(#fff, 0.2);
+    }
+  }
+  .songs-list-item-pic {
+    width: 50px;
+    height: 50px;
+    margin-right: 20px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  .songs-list-item-title {
+    font-size: 1.1rem;
+  }
+  .songs-list-item-subtitle {
+    a {
+      color: #939393;
+      margin-right: 10px;
+    }
+  }
+}
+</style>
