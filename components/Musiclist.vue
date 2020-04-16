@@ -13,6 +13,8 @@
         :title="item.title"
         :subtitle="item.subtitle"
         :picUrl="item.picUrl"
+        :id="item.id"
+        :baseUrl="item.baseUrl"
       />
     </div>
   </div>

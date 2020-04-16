@@ -4,7 +4,10 @@
       <img :src="picUrl" />
     </div>
     <div class="music-title">
-      {{ title }}
+      <a :href="`${baseUrl}/${id}`" v-if="baseUrl">{{ title }}</a>
+      <span v-else>
+        {{ title }}
+      </span>
     </div>
     <div class="music-subtitle">
       {{ subtitle }}
@@ -14,7 +17,7 @@
 
 <script>
 export default {
-  props: ["picUrl", "title", "subtitle"]
+  props: ["picUrl", "title", "subtitle", "baseUrl", "id"]
 };
 </script>
 
