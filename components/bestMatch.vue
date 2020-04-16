@@ -7,7 +7,9 @@
         <img :src="bestMatch.album_pic" />
       </div>
       <div class="song-name">
-        {{ bestMatch.name }}
+        <nuxt-link :to="`/song/${bestMatch.id}`">
+          {{ bestMatch.name }}
+        </nuxt-link>
       </div>
       <div class="song-artist">
         <nuxt-link :to="`/artist/${bestMatch.artist.id}`">

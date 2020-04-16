@@ -5,7 +5,9 @@
       <tr v-for="item in list" :key="item.id">
         <td><img :src="item.album_pic" /></td>
         <td>
-          <span>{{ item.name }}</span>
+          <nuxt-link :to="`/song/${item.id}`">
+            {{ item.name }}
+          </nuxt-link>
           <nuxt-link :to="`/artist/${item.artist.id}`">
             {{ item.artist.name }}
           </nuxt-link>
@@ -62,7 +64,7 @@ td {
   }
   &:nth-child(2) {
     padding: 0 10px;
-    a {
+    a:nth-child(2) {
       display: block;
       color: #939393;
     }

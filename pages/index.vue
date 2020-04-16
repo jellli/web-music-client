@@ -70,10 +70,13 @@ export default {
     });
 
     hot_music.playlist.tracks.map(item => {
+      const id = item.id;
       const title = item.name;
       const subtitle = item.ar[0].name;
       const picUrl = item.al.picUrl;
       hotMusic.push({
+        id,
+        baseUrl: "song",
         title,
         subtitle,
         picUrl
