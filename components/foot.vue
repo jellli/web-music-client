@@ -4,9 +4,9 @@
       <div class="footer-left">
         <span>
           Create By
-          <a href="#">Hoon</a>
-          <span>&</span>
           <a href="#">Grey</a>
+          <span>&</span>
+          <a href="#">Hoon</a>
         </span>
       </div>
       <div class="footer-right"></div>

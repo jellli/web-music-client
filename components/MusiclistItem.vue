@@ -10,13 +10,21 @@
       </span>
     </div>
     <div class="music-subtitle">
-      {{ subtitle }}
+      <nuxt-link :to="`${subtitle.baseUrl}/${subtitle.id}`" v-if="subtitle.id">
+        {{ subtitle.name }}
+      </nuxt-link>
+      <span v-else>
+        {{ subtitle }}
+      </span>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  // baseUrl作用为链接到详情页添加链接前缀
+  // 传入内容为字符串形式，无需左右两端"/"
+  // 如 baseUrl:"song"
   props: ["picUrl", "title", "subtitle", "baseUrl", "id"]
 };
 </script>
@@ -45,13 +53,16 @@ export default {
     margin: 10px 0 2px;
   }
   .music-subtitle {
-    color: #939393;
-    font-size: 14px;
-    // 限制行数
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    a,
+    span {
+      color: #939393;
+      font-size: 14px;
+      // 限制行数
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   }
 }
 </style>
