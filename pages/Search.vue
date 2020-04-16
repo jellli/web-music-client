@@ -78,8 +78,7 @@ export default {
       res.data.result.songs.map(async item => {
         const id = item.id;
         const name = item.name;
-        const artist_name = item.artists[0].name;
-        const artist_id = item.artists[0].id;
+        const artists = item.artists;
         const album_id = item.album.id;
         const album_detial = await this.$axios.get(
           `${process.env.MUSIC_API_URL}/album?id=${album_id}`
@@ -89,13 +88,11 @@ export default {
         temp.push({
           id,
           name,
-          artist: {
-            id: artist_id,
-            name: artist_name
-          },
+          artists,
           album_pic
         });
       });
+      console.log(temp);
       this.result = temp;
     }
   },
@@ -118,7 +115,7 @@ export default {
 }
 .search {
   .search-bar {
-    width: 60%;
+    width: 70%;
     border-radius: calc(1.2rem / 2 + 15px);
     background: #282828;
   }
@@ -148,10 +145,10 @@ export default {
   }
 }
 .search-result {
-  width: 60%;
+  width: 70%;
   padding: 40px 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 3fr;
   // align-self: start;
 }
 </style>

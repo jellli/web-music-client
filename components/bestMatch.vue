@@ -12,8 +12,12 @@
         </nuxt-link>
       </div>
       <div class="song-artist">
-        <nuxt-link :to="`/artist/${bestMatch.artist.id}`">
-          {{ bestMatch.artist.name }}
+        <nuxt-link
+          v-for="artist in bestMatch.artists"
+          :to="`/artist/${artist.id}`"
+          :key="artist.id"
+        >
+          {{ artist.name }}
         </nuxt-link>
       </div>
       <div class="music-ctrl">
@@ -71,6 +75,9 @@ export default {
 .song-artist {
   a {
     color: #939393;
+    &:not(:last-child)::after {
+      content: "·";
+    }
   }
 }
 </style>

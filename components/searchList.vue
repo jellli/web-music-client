@@ -8,8 +8,12 @@
           <nuxt-link :to="`/song/${item.id}`">
             {{ item.name }}
           </nuxt-link>
-          <nuxt-link :to="`/artist/${item.artist.id}`">
-            {{ item.artist.name }}
+          <nuxt-link
+            v-for="artist in item.artists"
+            :to="`/artist/${artist.id}`"
+            :key="artist.id"
+          >
+            {{ artist.name }}
           </nuxt-link>
         </td>
         <td>
@@ -52,6 +56,7 @@ export default {
 <style lang="scss" scoped>
 table {
   margin-top: 20px;
+  width: 100%;
 }
 td {
   // padding: 11px 0;
@@ -66,9 +71,14 @@ td {
   }
   &:nth-child(2) {
     padding: 0 10px;
-    a:nth-child(2) {
+    a:first-child {
       display: block;
+    }
+    a:not(:first-child) {
       color: #939393;
+      &:not(:last-child)::after {
+        content: "·";
+      }
     }
   }
   .music-ctrl {

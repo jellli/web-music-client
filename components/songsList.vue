@@ -6,7 +6,7 @@
       </div>
       <div>
         <div class="songs-list-item-title">
-          {{ song.name }}
+          <nuxt-link :to="`/song/${song.id}`">{{ song.name }}</nuxt-link>
         </div>
         <div class="songs-list-item-subtitle">
           <nuxt-link
@@ -78,7 +78,9 @@ export default {
   .songs-list-item-subtitle {
     a {
       color: #939393;
-      margin-right: 10px;
+      &:not(:last-child)::after {
+        content: "·";
+      }
     }
   }
   .music-ctrl {

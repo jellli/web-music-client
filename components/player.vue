@@ -93,7 +93,6 @@ export default {
   },
   mounted() {
     const player = document.getElementById("player");
-    const playbtn = document.getElementById("playbtn");
   }
 };
 </script>
@@ -135,8 +134,11 @@ export default {
 }
 .player-song-artists {
   a {
-    margin-right: 10px;
+    // margin-right: 10px;
     color: #939393;
+    &:not(:last-child)::after {
+      content: "·";
+    }
   }
 }
 .song-ctrl {
