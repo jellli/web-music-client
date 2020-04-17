@@ -92,7 +92,6 @@ export default {
           album_pic
         });
       });
-      console.log(temp);
       this.result = temp;
     }
   },
