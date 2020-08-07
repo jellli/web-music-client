@@ -16,11 +16,12 @@
           </nuxt-link>
         </div>
         <div class="music-ctrl">
-          <button @click="play" class="play-btn">播放此曲</button>
+          <button @click="play" class="play-btn">播放</button>
         </div>
       </div>
     </div>
-    <comment />
+    <!-- todo 传入props -->
+    <comment :comments="comments" :m_id="m_id" />
   </div>
 </template>
 
@@ -46,11 +47,19 @@ export default {
     const name = data.name;
     const album_pic = data.al.picUrl + "?param=300y300";
     const artists = data.ar;
+    const comments = await $axios.post(
+      `${process.env.BACKEND_URL}/get/comment`,
+      {
+        m_id: parseInt(params.id)
+      }
+    );
 
     return {
       name,
+      m_id: params.id,
       album_pic,
-      artists
+      artists,
+      comments: comments.data
     };
   }
 };
@@ -76,8 +85,8 @@ export default {
 }
 .album-pic {
   margin: 0 auto;
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
   img {
     width: 100%;
     height: 100%;
