@@ -2,9 +2,9 @@
   <div class="register-form restrainer">
     <h1>登录</h1>
     <form>
-      <input type="text" placeholder="用户名" />
-      <input type="password" placeholder="密码" />
-      <input type="submit" value="登录" />
+      <input type="text" placeholder="用户名" v-model="user_name" />
+      <input type="password" placeholder="密码" v-model="user_pwd" />
+      <input type="submit" value="登录" @click="login" />
       <div class="info-msg">
         <span>还没有账号？ <nuxt-link to="/register">注册</nuxt-link></span>
       </div>
@@ -18,6 +18,28 @@ export default {
     return {
       title: "登录"
     };
+  },
+  data() {
+    return {
+      user_name: "",
+      user_pwd: ""
+    };
+  },
+  methods: {
+    async login(e) {
+      e.preventDefault();
+      const res = await this.$axios.post(`${process.env.BACKEND_URL}/login`, {
+        user_name: this.user_name,
+        user_pwd: this.user_pwd
+      });
+      if (res.status === 200) {
+        this.$store.commit("toggleLoginState");
+        this.$store.commit("setUserName", this.user_name);
+        this.$router.push(`/user/${this.user_name}`);
+      } else {
+        alert("登陆失败");
+      }
+    }
   }
 };
 </script>
