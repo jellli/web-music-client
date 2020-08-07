@@ -29,12 +29,6 @@
       </div>
       <div class="warpper align-center">
         <div class="top-menu align-center">
-          <button
-            @click="() => this.$store.commit('toggleLoginState')"
-            style="margin:0 20px;outline:none;border:none;background-color:#1db954;padding:5px 10px;border-radius:13px;cursor:pointer;"
-          >
-            切换登录状态
-          </button>
           <div class="menu-item">
             <svg
               t="1586781986610"
@@ -110,7 +104,7 @@
                 fill="#939393"
               ></path>
             </svg>
-            <nuxt-link to="/user/mymusic">我的音乐</nuxt-link>
+            <nuxt-link to="/mymusic">我的音乐</nuxt-link>
           </div>
         </div>
         <div class="menu-item" v-if="this.$store.state.isLogin === false">
@@ -145,7 +139,7 @@ export default {};
   background: #282828;
   a {
     color: #939393;
-    font-size: 20px;
+    font-size: 1rem;
     transition: 0.3s color ease;
     &:hover {
       color: #fff;
