@@ -1,7 +1,9 @@
 export const state = () => ({
   isLogin: false,
   isPlaying: false,
-  currentId: ""
+  currentId: "",
+  userName: null,
+  pic: null
 });
 
 export const mutations = {
@@ -13,5 +15,11 @@ export const mutations = {
   },
   setCurrentId(state, id) {
     state.currentId = id;
+  },
+  setUserName(state, username) {
+    state.userName = username;
+  },
+  setUserPic(state, pic) {
+    state.pic = pic;
   }
 };

@@ -35,6 +35,12 @@ export default {
       if (res.status === 200) {
         this.$store.commit("toggleLoginState");
         this.$store.commit("setUserName", this.user_name);
+        const pic = await this.$axios.post(
+          `${process.env.BACKEND_URL}/get/user_pic`,
+          { user_name: this.user_name }
+        );
+        this.$store.commit("setUserPic", pic.data.user_pic);
+        // console.log(pic.data.user_pic);
         this.$router.push(`/user/${this.user_name}`);
       } else {
         alert("登陆失败");

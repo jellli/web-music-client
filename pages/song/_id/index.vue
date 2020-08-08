@@ -47,25 +47,42 @@ export default {
     const name = data.name;
     const album_pic = data.al.picUrl + "?param=300y300";
     const artists = data.ar;
-    const comments = await $axios.post(
-      `${process.env.BACKEND_URL}/get/comment`,
-      {
-        m_id: parseInt(params.id)
-      }
-    );
+    // 获取评论
+    const c = await $axios.post(`${process.env.BACKEND_URL}/get/comment`, {
+      m_id: parseInt(params.id)
+    });
+    const comments = c.data;
+    // 获取用户头像
+    for (const i in comments) {
+      const res = await $axios.post(`${process.env.BACKEND_URL}/get/user_pic`, {
+        user_name: comments[i].author
+      });
+      comments[i]["pic"] = res.data.user_pic;
+    }
+    // comments.forEach(async comment => {
+    //   const res = await $axios.post(`${process.env.BACKEND_URL}/get/user_pic`, {
+    //     user_name: comment.author
+    //   });
+    //   comment["pic"] = res.data.user_pic;
+    //   console.log(comment);
+    // });
+    // console.log(comments);
 
     return {
       name,
       m_id: params.id,
       album_pic,
       artists,
-      comments: comments.data
+      comments: comments
     };
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.song-detail {
+  min-height: 80%;
+}
 .song-header {
   display: grid;
   grid-template-columns: 1fr 2fr;

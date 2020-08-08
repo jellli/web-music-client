@@ -53,7 +53,7 @@ export default {
     const pro = await $axios.$post(`${process.env.BACKEND_URL}/get/user`, {
       user_name: params.username
     });
-    const profile = JSON.parse(pro.replace(/'/g, `"`));
+    // const profile = JSON.parse(pro.replace(/'/g, `"`));
 
     const hotMusic = [];
 
@@ -68,7 +68,7 @@ export default {
       });
     });
 
-    return { hotMusic, profile: profile[0] };
+    return { hotMusic, profile: pro[0] };
   },
   methods: {
     async upload(e) {
@@ -77,7 +77,7 @@ export default {
       var files = e.target.files;
       var data = new FormData();
       data.append("avatar", files[0]);
-      data.append("user_name", "bob");
+      data.append("user_name", this.$store.state.userName);
       await this.$axios.post(`${process.env.BACKEND_URL}/update/avatar`, data);
     }
   }
@@ -96,6 +96,7 @@ export default {
       height: 100%;
       border-radius: 50%;
       border: #fff 8px solid;
+      object-fit: cover;
     }
   }
   .user-info {
