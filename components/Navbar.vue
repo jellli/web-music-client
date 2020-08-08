@@ -116,12 +116,12 @@
           v-if="this.$store.state.isLogin === true"
         >
           <div class="avatar">
-            <img
-              src="https://hoon-cc.oss-cn-shenzhen.aliyuncs.com/wp-content/uploads/2019/02/65223547_p0_master1200-3.jpg"
-            />
+            <img :src="this.$store.state.pic" />
           </div>
           <div class="username">
-            <nuxt-link to="/user">username</nuxt-link>
+            <nuxt-link :to="`/user/${this.$store.state.userName}`">
+              {{ this.$store.state.userName }}
+            </nuxt-link>
           </div>
         </div>
       </div>
@@ -190,6 +190,7 @@ export default {};
         height: 100%;
         border: #fff 2px solid;
         border-radius: 50%;
+        object-fit: cover;
       }
     }
   }
