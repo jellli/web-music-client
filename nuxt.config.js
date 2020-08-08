@@ -32,11 +32,11 @@ export default {
   /*
    ** Global CSS
    */
-  css: ["assets/main.css"],
+  css: ["assets/main.css", "element-ui/lib/theme-chalk/index.css"],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["@/plugins/helpers.js"],
+  plugins: ["@/plugins/helpers.js", "@/plugins/element-ui/element-ui"],
   /*
    ** Nuxt.js dev-modules
    */
@@ -62,6 +62,7 @@ export default {
     /*
      ** You can extend webpack config here
      */
+    vendor: ["element-ui"],
     extend(config, ctx) {}
   }
 };
