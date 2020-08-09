@@ -129,6 +129,10 @@ export default {
       this.$axios.post(`${process.env.BACKEND_URL}/create/comment`, payload);
       this.reply_content = "";
       this.openReply = null;
+      this.$notify({
+        message: "回复成功！",
+        type: "success"
+      });
       this.reloadComments();
     },
     openReplyArea(id) {
@@ -149,6 +153,10 @@ export default {
       };
       this.$axios.post(`${process.env.BACKEND_URL}/create/comment`, payload);
       this.content = "";
+      this.$notify({
+        message: "评论成功！",
+        type: "success"
+      });
       this.reloadComments();
     }
   }
