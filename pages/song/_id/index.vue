@@ -53,11 +53,16 @@ export default {
     });
     const comments = c.data;
     // 获取用户头像
-    for (const i in comments) {
-      const res = await $axios.post(`${process.env.BACKEND_URL}/get/user_pic`, {
-        user_name: comments[i].author
-      });
-      comments[i]["pic"] = res.data.user_pic;
+    if (comments.length > 0) {
+      for (const i in comments) {
+        const res = await $axios.post(
+          `${process.env.BACKEND_URL}/get/user_pic`,
+          {
+            user_name: comments[i].author
+          }
+        );
+        comments[i]["pic"] = res.data.user_pic;
+      }
     }
     // comments.forEach(async comment => {
     //   const res = await $axios.post(`${process.env.BACKEND_URL}/get/user_pic`, {
