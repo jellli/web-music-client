@@ -1,6 +1,12 @@
 <template>
   <div class="player">
-    <audio :src="this.playUrl" id="player" @timeupdate="timeLine"></audio>
+    <!-- vue中使用ref获取页面元素 -->
+    <audio
+      :src="this.playUrl"
+      id="player"
+      @timeupdate="timeLine"
+      ref="player"
+    ></audio>
     <div class="player-song-data" v-if="JSON.stringify(data) !== '{}'">
       <div class="player-song-cover">
         <img :src="data.al.picUrl" />
@@ -78,13 +84,7 @@ export default {
   },
   methods: {
     play() {
-      if (this.getIsPlaying === true) {
-        player.pause();
-        this.$store.commit("togglePlayingState");
-      } else {
-        player.play();
-        this.$store.commit("togglePlayingState");
-      }
+      this.$store.commit("togglePlayingState");
     },
     timeLine() {
       this.currentTime = player.currentTime;
@@ -116,31 +116,37 @@ export default {
   watch: {
     async getPlayId() {
       try {
+        // 获取播放链接,如果有版权保护,播放链接为null
         const playUrl = await this.$axios.get(
           `${process.env.MUSIC_API_URL}/song/url?id=${this.$store.state.currentId}`
         );
-        const detial = await this.$axios.get(
-          `${process.env.MUSIC_API_URL}/song/detail?ids=${this.$store.state.currentId}`
-        );
-        this.data = detial.data.songs[0];
-        if (playUrl.data.length == 0) {
-          this.playUrl = "";
-        } else {
+        // 若可播放再改变当前播放器的内容
+        if (playUrl.data.data[0].url) {
+          const detial = await this.$axios.get(
+            `${process.env.MUSIC_API_URL}/song/detail?ids=${this.$store.state.currentId}`
+          );
+          this.data = detial.data.songs[0];
           this.playUrl = playUrl.data.data[0].url;
+        } else {
+          this.$message({
+            message: "因版权问题该音乐不提供播放,请尝试其他歌曲",
+            type: "warning"
+          });
         }
       } catch (error) {
         console.log(error);
       }
     },
     async getIsPlaying(val) {
-      // 此处较愚蠢 待改进
-      setTimeout(() => {
-        if (val === true) {
+      if (val === true) {
+        // 当音乐缓冲到可以播放的程度再进行播放操作，避免用户进行播放时无反应
+        await player.addEventListener("canplaythrough", () => {
           player.play();
-        } else {
-          player.pause();
-        }
-      }, 500);
+        });
+        player.play();
+      } else {
+        player.pause();
+      }
     }
   },
   mounted() {
