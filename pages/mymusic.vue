@@ -46,11 +46,11 @@
       </div>
     </div>
     <div class="restrainer">
-      <div class="box">
+      <div class="box" v-if="this.$store.state.isLogin">
         <div class="left-side">
           <div class="menu">
             <div class="menu-title" @click="isOpen = !isOpen">
-              创建的歌单
+              <span>创建的歌单</span>
               <svg
                 t="1596872179387"
                 class="icon"
@@ -71,40 +71,133 @@
             </div>
             <transition name="fade">
               <ul v-if="isOpen">
-                <li class="menu-item" @click="getListDetail(3136952023)">
-                  歌单1
-                </li>
-                <li class="menu-item" @click="getListDetail(24381617)">
-                  歌单2
-                </li>
-                <li class="menu-item">
-                  歌单3
+                <li v-for="i in user_created_list" :key="i.l_id" class="m-i">
+                  <div class="menu-item" @click="getListDetial(i.l_id)">
+                    <div class="list-cover">
+                      <img :src="i.list_cover" />
+                    </div>
+                    <div class="list-info">
+                      <h3>{{ i.list_name }}</h3>
+                      {{ i.music_ids.length }}首
+                    </div>
+                  </div>
+                  <div class="list-ctrl">
+                    <div class="edit-list" @click="enterEdit(i.l_id)">
+                      <svg
+                        t="1597040673974"
+                        class="icon"
+                        viewBox="0 0 1024 1024"
+                        version="1.1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        p-id="8530"
+                        width="20"
+                        height="20"
+                      >
+                        <path
+                          d="M768 896H256a128 128 0 0 1-128-128V256a128 128 0 0 1 128-128h256a42.666667 42.666667 0 0 1 0 85.333333H256a42.666667 42.666667 0 0 0-42.666667 42.666667v512a42.666667 42.666667 0 0 0 42.666667 42.666667h512a42.666667 42.666667 0 0 0 42.666667-42.666667v-256a42.666667 42.666667 0 0 1 85.333333 0v256a128 128 0 0 1-128 128z m-408.405333-232.917333a64 64 0 0 1 0-90.325334l45.141333-45.184 90.325333 90.325334-45.141333 45.184a64 64 0 0 1-90.325333 0z m165.589333-75.264l-90.325333-90.325334 351.232-351.232a64 64 0 1 1 90.325333 90.325334z"
+                          p-id="8531"
+                          fill="#ffffff"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div class="delete-list">
+                      <svg
+                        t="1597041091003"
+                        class="icon"
+                        viewBox="0 0 1024 1024"
+                        version="1.1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        p-id="9357"
+                        width="20"
+                        height="20"
+                      >
+                        <path
+                          d="M704 960H320c-52.9 0-96-43.1-96-96V256h576v608c0 52.9-43.1 96-96 96zM288 320v544c0 17.6 14.4 32 32 32h384c17.6 0 32-14.4 32-32V320H288z"
+                          fill="#ffffff"
+                          p-id="9358"
+                        ></path>
+                        <path
+                          d="M896 320H128c-17.7 0-32-14.3-32-32s14.3-32 32-32h768c17.7 0 32 14.3 32 32s-14.3 32-32 32zM384 756c-17.7 0-32-14.3-32-32V492c0-17.7 14.3-32 32-32s32 14.3 32 32v232c0 17.7-14.3 32-32 32zM512 756c-17.7 0-32-14.3-32-32V492c0-17.7 14.3-32 32-32s32 14.3 32 32v232c0 17.7-14.3 32-32 32zM640 756c-17.7 0-32-14.3-32-32V492c0-17.7 14.3-32 32-32s32 14.3 32 32v232c0 17.7-14.3 32-32 32z"
+                          fill="#ffffff"
+                          p-id="9359"
+                        ></path>
+                        <path
+                          d="M720 320H304V160c0-52.9 43.1-96 96-96h224c52.9 0 96 43.1 96 96v160z m-352-64h288v-96c0-17.6-14.4-32-32-32H400c-17.6 0-32 14.4-32 32v96z"
+                          fill="#ffffff"
+                          p-id="9360"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
                 </li>
               </ul>
             </transition>
           </div>
         </div>
         <div class="right-side">
-          <span v-if="detail">{{ detail.name }}</span>
-          <img :src="detail.coverImgUrl" v-if="detail" />
+          <div v-if="detial">
+            <sList :detial="detial" />
+            <songsList :songs="songs" />
+          </div>
+          <div v-if="edit">
+            <editList :pic_url="pic_url" :l_id="edit" />
+          </div>
         </div>
+      </div>
+      <div v-else>
+        请登录
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import sList from "@/components/sList";
+import songsList from "@/components/songsList";
+import editList from "@/components/editList";
 export default {
+  components: {
+    sList,
+    songsList,
+    editList
+  },
+  async asyncData({ $axios, store }) {
+    const user_created_list_res = await $axios.post(
+      `${process.env.BACKEND_URL}/get/created_musiclist`,
+      {
+        user_name: store.state.userName
+      }
+    );
+    // console.log(user_created_list_res);
+    return {
+      user_created_list: user_created_list_res.data
+    };
+  },
   data() {
     return {
-      isOpen: false,
+      isOpen: true,
       src: null,
-      detail: null,
+      detial: null,
+      edit: null,
       popup: false,
-      list_name: ""
+      list_name: "",
+      songs: null,
+      pic_url: null
     };
   },
   methods: {
+    async enterEdit(l_id) {
+      this.detial = null;
+      this.edit = l_id;
+      const res = await this.$axios.post(
+        `${process.env.BACKEND_URL}/get/list_cover`,
+        {
+          l_id
+        }
+      );
+      // console.log(res);
+      this.pic_url = res.data.list_cover;
+    },
     submit() {
       this.$axios.post(`${process.env.BACKEND_URL}/create/musiclist`, {
         user_name: this.$store.state.userName,
@@ -112,12 +205,40 @@ export default {
       });
       this.popup = false;
     },
-    async getListDetail(listId) {
-      const detail = await this.$axios.get(
-        `${process.env.MUSIC_API_URL}/playlist/detail?id=${listId}`
+    async getListDetial(listId) {
+      this.edit = null;
+      // 获取用户创建的歌单详情
+      const detial = await this.$axios.post(
+        `${process.env.BACKEND_URL}/get/musiclist_detail`,
+        {
+          l_id: listId
+        }
       );
-      console.log(detail);
-      this.detail = detail.data.playlist;
+      this.detial = detial.data[0];
+      // 获取歌单中所有歌曲详情
+      const query = [];
+      detial.data[0].music_ids.forEach(id => {
+        query.push(id.toString());
+      });
+      const res = await this.$axios.get(
+        `${process.env.MUSIC_API_URL}/song/detail?ids=${query.join(",")}`
+      );
+      // console.log(res.data);
+      const temp = [];
+      // 处理数据
+      res.data.songs.forEach(async song => {
+        const al = await this.$axios.get(
+          `${process.env.MUSIC_API_URL}/album?id=${song.al.id}`
+        );
+        const item = {
+          id: song.id,
+          name: song.name,
+          artists: song.ar,
+          album_pic: al.data.songs[0].al.picUrl
+        };
+        temp.push(item);
+      });
+      this.songs = temp;
     }
   }
 };
@@ -201,10 +322,11 @@ export default {
   opacity: 0;
 }
 .box {
-  min-height: 60vh;
-  border: 1px #fff solid;
+  min-height: 80vh;
+  // border: 1px #fff solid;
+  // background: #141414;
   display: flex;
-  padding: 20px;
+  // padding: 20px;
   ul {
     list-style: none;
   }
@@ -213,25 +335,67 @@ export default {
     padding: 10px;
     .menu-title {
       padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       transition: all ease 0.3s;
       cursor: pointer;
       &:hover {
         background: rgba(#fff, 0.2);
       }
     }
+    .m-i {
+      position: relative;
+    }
     .menu-item {
-      @extend .menu-title;
-      font-size: 1.1rem;
-      padding-left: 20px;
+      display: flex;
+      align-items: center;
+
+      padding: 5px;
+      font-size: 0.9rem;
+      transition: all ease 0.3s;
+      cursor: pointer;
+      &:hover {
+        background: rgba(#fff, 0.2);
+      }
+      // padding-left: 30px;
+      .list-cover {
+        width: 80px;
+        height: 80px;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .list-info {
+        padding: 10px;
+        h3 {
+          margin-bottom: 7px;
+        }
+      }
+    }
+    .list-ctrl {
+      z-index: 999;
+      position: absolute;
+      display: flex;
+      top: calc(50% - 10px);
+      right: 10px;
+      margin-left: auto;
+      margin-right: 10px;
+      & > * {
+        cursor: pointer;
+        margin-left: 7px;
+      }
     }
   }
 }
 .left-side {
   width: 30%;
-  border: 1px #eee solid;
+  // border: 1px #eee solid;
 }
 .right-side {
   width: 70%;
-  border: 1px #eee solid;
+  // border: 1px #eee solid;
 }
 </style>
