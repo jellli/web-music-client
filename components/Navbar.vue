@@ -147,6 +147,7 @@ export default {};
   }
   .restrainer {
     height: 100%;
+    min-height: 0;
     padding: 0;
     display: flex;
     justify-content: space-between;

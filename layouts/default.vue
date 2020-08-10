@@ -51,8 +51,12 @@ a {
   align-items: center;
 }
 .restrainer {
+  min-height: calc(100vh - 260px);
   padding: 40px 0;
   width: 70%;
   margin: 0 auto;
+  @media screen and (max-width: 1200px) {
+    width: 85%;
+  }
 }
 </style>

@@ -15,6 +15,9 @@
 </template>
 
 <style lang="scss" scoped>
+.restrainer {
+  min-height: 0;
+}
 footer {
   height: 200px;
   background: #282828;
