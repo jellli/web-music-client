@@ -167,7 +167,7 @@ $height: 90px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   border-top: #030306 solid 1px;
-  background: #282828;
+  background: #141414;
 }
 .player-song-data {
   display: flex;

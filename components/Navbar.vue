@@ -136,7 +136,7 @@ export default {};
 .navbar {
   width: 100vw;
   height: 60px;
-  background: #282828;
+  background: #141414;
   a {
     color: #939393;
     font-size: 1rem;
