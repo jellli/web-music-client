@@ -33,6 +33,13 @@
 <script>
 export default {
   props: ["songs"],
+  /* 
+  键值对
+  album_pic,
+  id,
+  name,
+  artists
+   */
   computed: {
     currentId() {
       return this.$store.state.currentId;
@@ -43,6 +50,7 @@ export default {
   },
   methods: {
     play(id) {
+      // 先获取url 如果不为null再切换状态
       this.$store.commit("setCurrentId", id);
       this.$store.commit("togglePlayingState");
     }

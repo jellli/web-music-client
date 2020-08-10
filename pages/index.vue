@@ -4,7 +4,7 @@
       <Musiclist
         title="艺人精选"
         subtitle="一口气畅听艺人所有歌曲"
-        :content="artistsList.slice(3, 9)"
+        :content="artistsList.slice(1, 7)"
       />
       <Musiclist
         title="推荐歌单"
@@ -34,7 +34,9 @@ export default {
   },
   async asyncData({ $axios }) {
     const BASE_URL = process.env.MUSIC_API_URL;
-    const artists_list = await $axios.$get(`${BASE_URL}/artist/list?area=96`);
+    const artists_list = await $axios.$get(
+      `${BASE_URL}/top/artists?offset=0&limit=9`
+    );
     const hot_list = await $axios.$get(
       `${BASE_URL}/top/playlist?limit=6&cat=%e6%ac%a7%e7%be%8e`
     );
