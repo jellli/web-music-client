@@ -21,13 +21,23 @@
       </div>
     </div>
     <!-- todo 传入props -->
-    <comment :comments="comments" :m_id="m_id" />
+    <comment
+      :comments="comments"
+      :m_id="m_id"
+      @reload="reloadComments"
+      v-if="hackReset"
+    />
   </div>
 </template>
 
 <script>
 import comment from "@/components/comment";
 export default {
+  data() {
+    return {
+      hackReset: true
+    };
+  },
   components: {
     comment
   },
@@ -37,8 +47,37 @@ export default {
       if (this.$route.params.id === this.$store.state.currentId) {
         this.$store.commit("togglePlayingState");
       }
+    },
+    async reloadComments() {
+      // 获取评论
+      const c = await this.$axios.post(
+        `${process.env.BACKEND_URL}/get/comment`,
+        {
+          m_id: parseInt(this.m_id)
+        }
+      );
+      const comments = c.data;
+      // 获取用户头像
+      for (const i in comments) {
+        const res = await this.$axios.post(
+          `${process.env.BACKEND_URL}/get/user_pic`,
+          {
+            user_name: comments[i].author
+          }
+        );
+        comments[i]["pic"] = res.data.user_pic;
+      }
+      // 愚蠢但有用
+      setTimeout(() => {
+        this.comments = comments;
+      }, 300);
+      this.hackReset = false;
+      this.$nextTick(() => {
+        this.hackReset = true;
+      });
     }
   },
+
   async asyncData({ $axios, params }) {
     const detial = await $axios.get(
       `${process.env.MUSIC_API_URL}/song/detail?ids=${params.id}`
@@ -64,21 +103,12 @@ export default {
         comments[i]["pic"] = res.data.user_pic;
       }
     }
-    // comments.forEach(async comment => {
-    //   const res = await $axios.post(`${process.env.BACKEND_URL}/get/user_pic`, {
-    //     user_name: comment.author
-    //   });
-    //   comment["pic"] = res.data.user_pic;
-    //   console.log(comment);
-    // });
-    // console.log(comments);
-
     return {
       name,
       m_id: params.id,
       album_pic,
       artists,
-      comments: comments
+      comments
     };
   }
 };

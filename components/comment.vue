@@ -75,7 +75,7 @@
 
 <script>
 export default {
-  props: ["comments", "m_id", "test"],
+  props: ["comments", "m_id"],
   data() {
     return {
       content: "",
@@ -92,29 +92,7 @@ export default {
     verify() {
       this.isLogin ? console.log("good") : this.$router.push("/login");
     },
-    async reloadComments() {
-      // console.log(this.comments);
-      // 获取评论
-      const c = await this.$axios.post(
-        `${process.env.BACKEND_URL}/get/comment`,
-        {
-          m_id: parseInt(this.m_id)
-        }
-      );
-      const comments = c.data;
-      // 获取用户头像
-      for (const i in comments) {
-        const res = await this.$axios.post(
-          `${process.env.BACKEND_URL}/get/user_pic`,
-          {
-            user_name: comments[i].author
-          }
-        );
-        comments[i]["pic"] = res.data.user_pic;
-      }
-      this.comments = comments;
-      // console.log(comments);
-    },
+
     reply(o_author, o_content, replyId) {
       this.verify();
       const payload = {
@@ -133,7 +111,6 @@ export default {
         message: "回复成功！",
         type: "success"
       });
-      this.reloadComments();
     },
     openReplyArea(id) {
       this.reply_content = "";
@@ -157,7 +134,7 @@ export default {
         message: "评论成功！",
         type: "success"
       });
-      this.reloadComments();
+      this.$emit("reload");
     }
   }
 };
