@@ -2,7 +2,13 @@
   <div class="songs-list">
     <div class="songs-list-item" v-for="song in songs" :key="song.id">
       <div class="songs-list-item-pic">
-        <img :src="song.album_pic" />
+        <el-image
+          style="width: 100%; height: 100%"
+          :src="song.album_pic"
+          fit="cover"
+          :lazy="true"
+        ></el-image>
+        <!-- <img :src="song.album_pic" /> -->
       </div>
       <div>
         <div class="songs-list-item-title">
@@ -109,11 +115,11 @@ export default {
     width: 50px;
     height: 50px;
     margin-right: 20px;
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    // img {
+    //   width: 100%;
+    //   height: 100%;
+    //   object-fit: cover;
+    // }
   }
   .songs-list-item-title {
     font-size: 1.1rem;
