@@ -78,8 +78,16 @@ export default {
   methods: {
     play(id) {
       // 先获取url 如果不为null再切换状态
-      this.$store.commit("setCurrentId", id);
-      this.$store.commit("togglePlayingState");
+      if (this.$store.state.currentId == id) {
+        this.$store.commit("togglePlayingState");
+      } else if (this.$store.state.isPlaying) {
+        this.$store.commit("togglePlayingState");
+        this.$store.commit("setCurrentId", id);
+        this.$store.commit("togglePlayingState");
+      } else {
+        this.$store.commit("setCurrentId", id);
+        this.$store.commit("togglePlayingState");
+      }
     }
   }
 };

@@ -69,10 +69,13 @@ export default {
   },
   methods: {
     play(id) {
-      if (id === this.$store.state.currentId) {
+      if (this.$store.state.currentId == id) {
+        this.$store.commit("togglePlayingState");
+      } else if (this.$store.state.isPlaying) {
+        this.$store.commit("togglePlayingState");
+        this.$store.commit("setCurrentId", id);
         this.$store.commit("togglePlayingState");
       } else {
-        this.$store.commit("togglePlayingState");
         this.$store.commit("setCurrentId", id);
         this.$store.commit("togglePlayingState");
       }
