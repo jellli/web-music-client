@@ -89,52 +89,55 @@ export default {
     }
   },
   methods: {
-    verify() {
-      this.isLogin ? console.log("good") : this.$router.push("/login");
-    },
-
     reply(o_author, o_content, replyId) {
-      this.verify();
-      const payload = {
-        m_id: parseInt(this.m_id),
-        isReply: true,
-        o_author,
-        o_content,
-        replyId,
-        author: this.$store.state.userName,
-        content: this.reply_content
-      };
-      this.$axios.post(`${process.env.BACKEND_URL}/create/comment`, payload);
-      this.reply_content = "";
-      this.openReply = null;
-      this.$notify({
-        message: "回复成功！",
-        type: "success"
-      });
+      if (this.$store.state.isLogin) {
+        const payload = {
+          m_id: parseInt(this.m_id),
+          isReply: true,
+          o_author,
+          o_content,
+          replyId,
+          author: this.$store.state.userName,
+          content: this.reply_content
+        };
+        this.$axios.post(`${process.env.BACKEND_URL}/create/comment`, payload);
+        this.reply_content = "";
+        this.openReply = null;
+        this.$message({
+          message: "回复成功！",
+          type: "success"
+        });
+        this.$emit("reload");
+      } else {
+        this.$message({ message: "请先登录再进行操作", type: "warning" });
+      }
     },
     openReplyArea(id) {
       this.reply_content = "";
       this.openReply === id ? (this.openReply = null) : (this.openReply = id);
     },
     async submit(e) {
-      this.verify();
-      e.preventDefault();
-      const payload = {
-        m_id: parseInt(this.m_id),
-        isReply: false,
-        o_author: null,
-        o_content: null,
-        replyId: null,
-        author: this.$store.state.userName,
-        content: this.content
-      };
-      this.$axios.post(`${process.env.BACKEND_URL}/create/comment`, payload);
-      this.content = "";
-      this.$notify({
-        message: "评论成功！",
-        type: "success"
-      });
-      this.$emit("reload");
+      if (this.$store.state.isLogin) {
+        e.preventDefault();
+        const payload = {
+          m_id: parseInt(this.m_id),
+          isReply: false,
+          o_author: null,
+          o_content: null,
+          replyId: null,
+          author: this.$store.state.userName,
+          content: this.content
+        };
+        this.$axios.post(`${process.env.BACKEND_URL}/create/comment`, payload);
+        this.content = "";
+        this.$message({
+          message: "评论成功！",
+          type: "success"
+        });
+        this.$emit("reload");
+      } else {
+        this.$message({ message: "请先登录再进行操作", type: "warning" });
+      }
     }
   }
 };
