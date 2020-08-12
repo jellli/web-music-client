@@ -128,7 +128,10 @@ export default {
           author: this.$store.state.userName,
           content: this.content
         };
-        this.$axios.post(`${process.env.BACKEND_URL}/create/comment`, payload);
+        await this.$axios.post(
+          `${process.env.BACKEND_URL}/create/comment`,
+          payload
+        );
         this.content = "";
         this.$message({
           message: "评论成功！",

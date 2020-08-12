@@ -9,6 +9,7 @@
             title="创建的歌单"
             @getDetial="getListDetial"
             @enterEdit="enterEdit"
+            @delete="deleteList"
           />
           <showMusicList
             :list_data="user_collected_list"
@@ -63,6 +64,7 @@ export default {
         user_name: store.state.userName
       }
     );
+    // console.log(user_collected_list_res);
     return {
       user_created_list: user_created_list_res.data,
       user_collected_list: user_collected_list_res.data
@@ -75,15 +77,23 @@ export default {
       detial: null,
       edit: null,
       songs: null,
-      pic_url: null
+      pic_url: null,
+      user_created_list: null
     };
   },
   methods: {
     async reloadCreatedMusicLists() {
-      this.isOpen = false;
-      this.$nextTick(() => {
-        this.isOpen = true;
-      });
+      const user_created_list_res = await this.$axios.post(
+        `${process.env.BACKEND_URL}/get/created_musiclist`,
+        {
+          user_name: this.$store.state.userName
+        }
+      );
+      this.user_created_list = user_created_list_res.data;
+      // this.isOpen = false;
+      // this.$nextTick(() => {
+      //   this.isOpen = true;
+      // });
     },
     async enterEdit(l_id) {
       this.detial = null;
@@ -97,10 +107,22 @@ export default {
       // console.log(res);
       this.pic_url = res.data.list_cover;
     },
+    // todo
+    async deleteList(l_id) {
+      const res = await this.$axios.delete(
+        `${process.env.BACKEND_URL}/get/list_cover`,
+        {
+          l_id
+        }
+      );
+      // console.log(res);
+      this.pic_url = res.data.list_cover;
+    },
 
     async getListDetial(listId) {
       this.edit = null;
       // 获取用户创建的歌单详情
+      // console.log(listId);
       const detial = await this.$axios.post(
         `${process.env.BACKEND_URL}/get/musiclist_detail`,
         {

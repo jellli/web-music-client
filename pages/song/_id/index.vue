@@ -35,7 +35,8 @@ import comment from "@/components/comment";
 export default {
   data() {
     return {
-      hackReset: true
+      hackReset: true,
+      comments: null
     };
   },
   components: {
@@ -68,13 +69,11 @@ export default {
         comments[i]["pic"] = res.data.user_pic;
       }
       // 愚蠢但有用
-      setTimeout(() => {
-        this.comments = comments;
-      }, 300);
-      this.hackReset = false;
-      this.$nextTick(() => {
-        this.hackReset = true;
-      });
+      this.comments = comments;
+      // this.hackReset = false;
+      // this.$nextTick(() => {
+      //   this.hackReset = true;
+      // });
     }
   },
 

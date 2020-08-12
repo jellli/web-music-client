@@ -22,8 +22,15 @@
         </tr>
       </table>
 
-      <el-image style="width: 150px; height: 150px" :src="pic_url" fit="cover">
-      </el-image>
+      <div class="edit-cover">
+        <el-image
+          style="width: 150px; height: 150px"
+          :src="pic_url"
+          fit="cover"
+        >
+        </el-image>
+        <span>编辑封面</span>
+      </div>
     </div>
   </div>
 </template>
@@ -38,12 +45,13 @@ export default {
     };
   },
   methods: {
-    handleSubmit() {
-      this.$axios.post(`${process.env.BACKEND_URL}/update/musiclist`, {
+    async handleSubmit() {
+      await this.$axios.post(`${process.env.BACKEND_URL}/update/musiclist`, {
         list_name: this.list_name,
         list_desc: this.list_desc,
         l_id: this.l_id
       });
+      this.$emit("reload");
     }
   }
 };
@@ -73,8 +81,8 @@ table > tr > td {
   padding-top: 30px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  align-items: center;
-  justify-content: space-between;
+  // align-items: center;
+  // justify-content: space-between;
   & > *:nth-child(2) {
     margin-left: calc(50% - 75px);
   }
