@@ -3,13 +3,13 @@
     <div class="user-profile">
       <div class="user-avatar">
         <img :src="profile.user_pic" />
-        <input
+        <!-- <input
           ref="files"
           type="file"
           name="avatar"
           id="avatar"
           v-on:change="upload"
-        />
+        /> -->
       </div>
       <div class="user-info">
         <div class="username">{{ profile.user_name }}</div>
@@ -26,7 +26,7 @@
     <Musiclist
       title="你喜欢的音乐"
       subtitle="重复聆听你的挚爱"
-      :content="hotMusic.slice(0, 6)"
+      :content="liked_music"
     />
   </div>
 </template>
@@ -48,27 +48,44 @@ export default {
     };
   },
   async asyncData({ $axios, params }) {
-    const BASE_URL = process.env.MUSIC_API_URL;
-    const hot_music = await $axios.$get(`${BASE_URL}/top/list?idx=8`);
+    // 获取用户数据
     const pro = await $axios.$post(`${process.env.BACKEND_URL}/get/user`, {
       user_name: params.username
     });
-    // const profile = JSON.parse(pro.replace(/'/g, `"`));
-
-    const hotMusic = [];
-
-    hot_music.playlist.tracks.map(item => {
-      const title = item.name;
-      const subtitle = item.ar[0].name;
-      const picUrl = item.al.picUrl;
-      hotMusic.push({
-        title,
-        subtitle,
-        picUrl
-      });
+    // 获取用户喜欢的音乐
+    const liked_music_res = await $axios.$post(
+      `${process.env.BACKEND_URL}/get/liked_music`,
+      {
+        user_name: params.username
+      }
+    );
+    const query = [];
+    liked_music_res[0].liked_music.forEach(id => {
+      query.push(id.toString());
     });
-
-    return { hotMusic, profile: pro[0] };
+    const songs_res = await $axios.get(
+      `${process.env.MUSIC_API_URL}/song/detail?ids=${query.join(",")}`
+    );
+    const temp = [];
+    songs_res.data.songs.forEach(async song => {
+      console.log(song.ar);
+      const al = await $axios.get(
+        `${process.env.MUSIC_API_URL}/album?id=${song.al.id}`
+      );
+      const item = {
+        id: song.id,
+        title: song.name,
+        subtitle: {
+          id: song.ar[0].id,
+          name: song.ar[0].name,
+          baseUrl: "artist"
+        },
+        picUrl: al.data.songs[0].al.picUrl,
+        baseUrl: "song"
+      };
+      temp.push(item);
+    });
+    return { profile: pro[0], liked_music: temp };
   },
   methods: {
     async upload(e) {

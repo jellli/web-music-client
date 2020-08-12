@@ -4,13 +4,15 @@
       <img :src="picUrl" />
     </div>
     <div class="music-title">
-      <nuxt-link :to="`${baseUrl}/${id}`" v-if="baseUrl">{{ title }}</nuxt-link>
+      <nuxt-link :to="`/${baseUrl}/${id}`" v-if="baseUrl">{{
+        title
+      }}</nuxt-link>
       <span v-else>
         {{ title }}
       </span>
     </div>
     <div class="music-subtitle">
-      <nuxt-link :to="`${subtitle.baseUrl}/${subtitle.id}`" v-if="subtitle.id">
+      <nuxt-link :to="`/${subtitle.baseUrl}/${subtitle.id}`" v-if="subtitle.id">
         {{ subtitle.name }}
       </nuxt-link>
       <span v-else>
