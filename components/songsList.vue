@@ -25,9 +25,8 @@
         </div>
       </div>
       <div class="music-ctrl">
-        <i class="fas fa-heart" v-if="likedMusic.includes(song.id)"></i>
-        <i class="far fa-heart" v-else></i>
-        <cMbtn :music_id="song.id">
+        <likeSong :m_id="song.id" />
+        <cMbtn :music_id="song.id" @reload="emitReload">
           <i class="fas fa-folder-plus"></i>
           <!-- <svg
             t="1597145871986"
@@ -46,6 +45,12 @@
             ></path>
           </svg> -->
         </cMbtn>
+        <removeSong
+          :m_id="song.id"
+          :l_id="list_id"
+          v-if="list_id && list_id !== 'liked'"
+          @reload="emitReload"
+        />
         <i
           class="fas fa-pause"
           v-if="currentId === song.id && isPlaying"
@@ -59,11 +64,15 @@
 
 <script>
 import cMbtn from "@/components/cMbtn";
+import likeSong from "@/components/likeSong";
+import removeSong from "@/components/removeSong";
 export default {
   components: {
-    cMbtn
+    cMbtn,
+    likeSong,
+    removeSong
   },
-  props: ["songs"],
+  props: ["songs", "list_id"],
   /* 
   键值对
   album_pic,
@@ -77,9 +86,6 @@ export default {
     },
     isPlaying() {
       return this.$store.state.isPlaying;
-    },
-    likedMusic() {
-      return this.$store.state.user.liked_music;
     }
   },
   methods: {
@@ -95,6 +101,9 @@ export default {
         this.$store.commit("setCurrentId", id);
         this.$store.commit("togglePlayingState");
       }
+    },
+    emitReload() {
+      this.$emit("reload");
     }
   }
 };

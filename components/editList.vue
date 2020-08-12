@@ -52,6 +52,11 @@ export default {
         l_id: this.l_id
       });
       this.$emit("reload");
+      this.$emit("edited");
+      this.$message({
+        message: "修改歌单信息成功!",
+        type: "success"
+      });
     }
   }
 };

@@ -62,6 +62,7 @@ export default {
           message: "收藏歌曲成功！",
           type: "success"
         });
+        this.$emit("reload");
       } else {
         this.$message({ message: "请选择要收藏到的歌单", type: "warning" });
       }

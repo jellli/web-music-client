@@ -7,9 +7,10 @@
             :list_data="user_created_list"
             :owned="true"
             title="创建的歌单"
+            @reload="reloadCreatedMusicLists"
             @getDetial="getListDetial"
             @enterEdit="enterEdit"
-            @delete="deleteList"
+            @getLikedDetial="getLikedDetial"
           />
           <showMusicList
             :list_data="user_collected_list"
@@ -19,8 +20,13 @@
         </div>
         <div class="right-side">
           <div v-if="detial">
-            <sList :detial="detial" />
-            <songsList :songs="songs" v-if="songs" />
+            <sList :detial="detial" :creator_pic="creator_pic" />
+            <songsList
+              :songs="songs"
+              v-if="songs"
+              :list_id="current_list_id"
+              @reload="reloadAll"
+            />
             <h2 v-else>该歌单里还没添加任何歌曲</h2>
           </div>
           <div v-if="edit">
@@ -28,6 +34,7 @@
               :pic_url="pic_url"
               :l_id="edit"
               @reload="reloadCreatedMusicLists"
+              @edited="getListDetial(edit)"
             />
           </div>
         </div>
@@ -78,7 +85,9 @@ export default {
       edit: null,
       songs: null,
       pic_url: null,
-      user_created_list: null
+      creator_pic: null,
+      user_created_list: null,
+      current_list_id: null
     };
   },
   methods: {
@@ -90,13 +99,10 @@ export default {
         }
       );
       this.user_created_list = user_created_list_res.data;
-      // this.isOpen = false;
-      // this.$nextTick(() => {
-      //   this.isOpen = true;
-      // });
     },
     async enterEdit(l_id) {
       this.detial = null;
+      this.current_list_id = null;
       this.edit = l_id;
       const res = await this.$axios.post(
         `${process.env.BACKEND_URL}/get/list_cover`,
@@ -107,56 +113,92 @@ export default {
       // console.log(res);
       this.pic_url = res.data.list_cover;
     },
-    // todo
-    async deleteList(l_id) {
-      const res = await this.$axios.delete(
-        `${process.env.BACKEND_URL}/get/list_cover`,
-        {
-          l_id
-        }
-      );
-      // console.log(res);
-      this.pic_url = res.data.list_cover;
-    },
 
-    async getListDetial(listId) {
-      this.edit = null;
-      // 获取用户创建的歌单详情
-      // console.log(listId);
-      const detial = await this.$axios.post(
-        `${process.env.BACKEND_URL}/get/musiclist_detail`,
-        {
-          l_id: listId
-        }
-      );
-      this.detial = detial.data[0];
-      if (detial.data[0].music_ids.length !== 0) {
-        // 获取歌单中所有歌曲详情
-        const query = [];
-        detial.data[0].music_ids.forEach(id => {
-          query.push(id.toString());
-        });
-        const res = await this.$axios.get(
-          `${process.env.MUSIC_API_URL}/song/detail?ids=${query.join(",")}`
+    async getListDetial(listId, force = false) {
+      if (listId !== this.current_list_id || force) {
+        this.edit = null;
+        // 获取用户创建的歌单详情
+        const detial = await this.$axios.post(
+          `${process.env.BACKEND_URL}/get/musiclist_detail`,
+          {
+            l_id: listId
+          }
         );
-        // console.log(res.data);
-        const temp = [];
-        // 处理数据
-        res.data.songs.forEach(async song => {
-          const al = await this.$axios.get(
-            `${process.env.MUSIC_API_URL}/album?id=${song.al.id}`
+        this.detial = detial.data[0];
+        // 获取创建者头像
+        const user_pic_res = await this.$axios.post(
+          `${process.env.BACKEND_URL}/get/user_pic`,
+          {
+            user_name: this.detial.created_by
+          }
+        );
+        this.creator_pic = user_pic_res.data.user_pic;
+        if (detial.data[0].music_ids.length !== 0) {
+          // 获取歌单中所有歌曲详情
+          const query = [];
+          detial.data[0].music_ids.forEach(id => {
+            query.push(id.toString());
+          });
+          const res = await this.$axios.get(
+            `${process.env.MUSIC_API_URL}/song/detail?ids=${query.join(",")}`
           );
-          const item = {
-            id: song.id,
-            name: song.name,
-            artists: song.ar,
-            album_pic: al.data.songs[0].al.picUrl
-          };
-          temp.push(item);
-        });
-        this.songs = temp;
+          const temp = [];
+          // 处理数据
+          res.data.songs.forEach(async song => {
+            const al = await this.$axios.get(
+              `${process.env.MUSIC_API_URL}/album?id=${song.al.id}`
+            );
+            const item = {
+              id: song.id,
+              name: song.name,
+              artists: song.ar,
+              album_pic: al.data.songs[0].al.picUrl
+            };
+            temp.push(item);
+          });
+          this.songs = temp;
+          this.current_list_id = listId;
+        }
       }
+    },
+    async getLikedDetial() {
+      this.detial = {
+        list_name: "我喜欢的音乐",
+        creator_pic: this.$store.state.pic,
+        created_by: this.$store.state.userName,
+        list_cover:
+          "https://web-music.oss-cn-shenzhen.aliyuncs.com/static/3099b3803ad9496896c43f22fe9be8c4.png"
+      };
+      const query = this.$store.state.user.liked_music
+        .map(item => item.toString())
+        .join(",");
+      const res = await this.$axios.get(
+        `${process.env.MUSIC_API_URL}/song/detail?ids=${query}`
+      );
+      const temp = [];
+      // 处理数据
+      res.data.songs.forEach(async song => {
+        const al = await this.$axios.get(
+          `${process.env.MUSIC_API_URL}/album?id=${song.al.id}`
+        );
+        const item = {
+          id: song.id,
+          name: song.name,
+          artists: song.ar,
+          album_pic: al.data.songs[0].al.picUrl
+        };
+        temp.push(item);
+      });
+      this.songs = temp;
+      this.current_list_id = "liked";
+    },
+    reloadAll() {
+      this.reloadCreatedMusicLists();
+      this.getListDetial(this.current_list_id, true);
     }
+  },
+  mounted() {
+    this.getLikedDetial();
   }
 };
 </script>
