@@ -42,12 +42,20 @@
         <span>
           {{ this.$formatTime(currentTime) }}
         </span>
-        <div class="progress-bar" id="pr" @click="setProgress">
+        <el-slider
+          v-model="currentTime"
+          style="width:100%"
+          @change="setProgress"
+          :max="duration"
+          :show-tooltip="false"
+          :disabled="playUrl.length === 0"
+        ></el-slider>
+        <!-- <div class="progress-bar" id="pr" @click="setProgress">
           <div
             class="current-progress"
             :style="`width:${(currentTime / duration) * 100}%`"
           ></div>
-        </div>
+        </div> -->
         <span v-if="!isNaN(duration)">
           {{ this.$formatTime(duration) }}
         </span>
@@ -58,15 +66,29 @@
     </div>
     <div class="song-nav">
       <div class="volume">
-        <i class="fas fa-volume-mute" v-if="this.volume === 0"></i>
-        <i class="fas fa-volume-down" v-if="this.volume <= 0.5"></i>
         <i
-          class="fas fa-volume-up"
-          v-if="this.volume <= 1 && this.volume > 0.5"
+          class="fas fa-volume-mute"
+          v-if="this.volume === 0"
+          @click="toggleVolume"
         ></i>
-        <div class="volume-bar" @click="setVolume" id="vo">
+        <i
+          class="fas fa-volume-down"
+          v-else-if="this.volume <= 0.5"
+          @click="toggleVolume"
+        ></i>
+        <i class="fas fa-volume-up" v-else @click="toggleVolume"></i>
+        <el-slider
+          v-model="volume"
+          style="width:70%;flex-shrink:0;"
+          :max="1"
+          :step="0.05"
+          tooltip-class="volume-tooltip"
+          :format-tooltip="volume => `${parseInt(volume * 100)}`"
+          @input="setVolume"
+        ></el-slider>
+        <!-- <div class="volume-bar" @click="setVolume" id="vo">
           <div class="current-volume" :style="`width:${volume * 100}%`"></div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -79,7 +101,8 @@ export default {
       data: {},
       currentTime: 0,
       duration: 0,
-      volume: 0.5
+      volume: 0.5,
+      temp: 0
     };
   },
   methods: {
@@ -98,11 +121,20 @@ export default {
       if (this.$store.state.isPlaying === false) {
         this.$store.commit("togglePlayingState");
       }
-      player.currentTime = this.duration * (event.offsetX / pr.clientWidth);
+      player.currentTime = this.currentTime;
     },
     setVolume(event) {
-      player.volume = event.offsetX / vo.clientWidth;
-      this.volume = player.volume;
+      player.volume = this.volume;
+      // player.volume = event.offsetX / vo.clientWidth;
+      // this.volume = player.volume;
+    },
+    toggleVolume() {
+      if (this.volume === 0) {
+        this.volume = this.temp;
+      } else {
+        this.temp = this.volume;
+        this.volume = 0;
+      }
     }
   },
   computed: {
@@ -206,7 +238,7 @@ $height: 90px;
   height: $height;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   .btns {
     display: flex;
@@ -257,9 +289,16 @@ $height: 90px;
 .volume {
   display: flex;
   align-items: center;
-  width: 100px;
+  // justify-content: space-evenly;
+  padding-right: 20px;
+  width: 200px;
   i {
-    margin-right: 10px;
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+    margin-right: 15px;
+    // padding-right: 20px;
   }
 }
 .volume-bar {
@@ -275,5 +314,10 @@ $height: 90px;
     background: #1db954;
     transition: all ease 0.2s;
   }
+}
+.volume-tooltip {
+  background: #282828;
+  border: 1px #000 solid;
+  color: #282828;
 }
 </style>
