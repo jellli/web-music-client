@@ -10,7 +10,7 @@
         </div>
         <div class="sl-info-d">
           <div class="avatar">
-            <el-avatar :size="50" :src="user_pic"></el-avatar>
+            <el-avatar :size="50" :src="creator_pic"></el-avatar>
           </div>
           <div class="info">
             {{ detial.created_by }}
@@ -28,21 +28,7 @@
 
 <script>
 export default {
-  props: ["detial"],
-  // data() {
-  //   return { user_pic: null };
-  // },
-  computed: {
-    user_pic() {
-      this.$axios
-        .post(`${process.env.BACKEND_URL}/get/user_pic`, {
-          user_name: this.detial.created_by
-        })
-        .then(res => {
-          return res.data[0].user_pic;
-        });
-    }
-  }
+  props: ["detial", "creator_pic"]
 };
 </script>
 
