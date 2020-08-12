@@ -32,16 +32,19 @@ export default {
         user_name: this.user_name,
         user_pwd: this.user_pwd
       });
-      // console.log(res);
+
       if (res.data.status === 200) {
         this.$store.commit("toggleLoginState");
         this.$store.commit("setUserName", this.user_name);
-        const pic = await this.$axios.post(
-          `${process.env.BACKEND_URL}/get/user_pic`,
-          { user_name: this.user_name }
+        const user_res = await this.$axios.post(
+          `${process.env.BACKEND_URL}/get/user`,
+          {
+            user_name: this.user_name
+          }
         );
-        this.$store.commit("setUserPic", pic.data.user_pic);
-        // console.log(pic.data.user_pic);
+
+        this.$store.commit("setUserPic", user_res.data[0].user_pic);
+        this.$store.commit("setUser", user_res.data[0]);
         this.$router.push(`/user/${this.user_name}`);
         this.$message({
           message: "登陆成功！正在跳转...",

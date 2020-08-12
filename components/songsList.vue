@@ -25,8 +25,11 @@
         </div>
       </div>
       <div class="music-ctrl">
+        <i class="fas fa-heart" v-if="likedMusic.includes(song.id)"></i>
+        <i class="far fa-heart" v-else></i>
         <cMbtn :music_id="song.id">
-          <svg
+          <i class="fas fa-folder-plus"></i>
+          <!-- <svg
             t="1597145871986"
             class="icon"
             viewBox="0 0 1024 1024"
@@ -41,7 +44,7 @@
               p-id="5692"
               fill="#ffffff"
             ></path>
-          </svg>
+          </svg> -->
         </cMbtn>
         <i
           class="fas fa-pause"
@@ -74,6 +77,9 @@ export default {
     },
     isPlaying() {
       return this.$store.state.isPlaying;
+    },
+    likedMusic() {
+      return this.$store.state.user.liked_music;
     }
   },
   methods: {

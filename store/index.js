@@ -25,5 +25,11 @@ export const mutations = {
   },
   setUserPic(state, pic) {
     state.pic = pic;
+  },
+  reset(state) {
+    state.isLogin = false;
+    state.userName = null;
+    state.pic = null;
+    state.user = null;
   }
 };
