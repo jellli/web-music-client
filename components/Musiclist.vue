@@ -7,15 +7,20 @@
       {{ subtitle }}
     </div>
     <div class="list-content">
-      <MusiclistItem
-        v-for="item in content"
-        :key="item.id"
-        :title="item.title"
-        :subtitle="item.subtitle"
-        :picUrl="item.picUrl"
-        :id="item.id"
-        :baseUrl="item.baseUrl"
-      />
+      <div v-if="content" class="items">
+        <MusiclistItem
+          v-for="item in content"
+          :key="item.id"
+          :title="item.title"
+          :subtitle="item.subtitle"
+          :picUrl="item.picUrl"
+          :id="item.id"
+          :baseUrl="item.baseUrl"
+        />
+      </div>
+      <div v-else>
+        <h2>这里空无一物...</h2>
+      </div>
     </div>
   </div>
 </template>
@@ -44,10 +49,14 @@ export default {
   }
   .list-content {
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(6, 180px);
-    gap: 20px 0;
-    padding: 16px 0;
+    overflow: auto;
+    .items {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(6, 180px);
+      gap: 20px 0;
+      padding: 16px 0;
+    }
   }
 }
 </style>

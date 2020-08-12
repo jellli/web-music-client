@@ -96,6 +96,10 @@ export default {
 </script>
 
 <style lang="scss">
+.slot-ctrl {
+  display: flex;
+  align-items: center;
+}
 ul {
   list-style: none;
 }
