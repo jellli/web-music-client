@@ -7,7 +7,7 @@
       {{ subtitle }}
     </div>
     <div class="list-content">
-      <div v-if="content" class="items">
+      <div v-if="content.length !== 0" class="items">
         <MusiclistItem
           v-for="item in content"
           :key="item.id"
@@ -17,11 +17,13 @@
           :id="item.id"
           :baseUrl="item.baseUrl"
           :type="type"
-          :playlist="playlist"
+          :playlist="item.playlist"
         />
       </div>
       <div v-else>
-        <h2>这里空无一物...</h2>
+        <div class="none">
+          <h3>这里空无一物...</h3>
+        </div>
       </div>
     </div>
   </div>
@@ -33,7 +35,7 @@ export default {
   components: {
     MusiclistItem
   },
-  props: ["title", "subtitle", "content", "type", "playlist"]
+  props: ["title", "subtitle", "content", "type"]
   // 传入的content必须要有title,picUrl,可选subtitle
 };
 </script>
@@ -51,6 +53,9 @@ export default {
   }
   .list-content {
     width: 100%;
+    .none {
+      margin-top: 15px;
+    }
     .items {
       overflow: auto;
       width: 100%;

@@ -29,9 +29,11 @@ export default {
     handleClick() {
       if (this.m_id) {
         this.play(this.m_id);
-      }
-      if (this.list) {
+      } else if (this.list) {
         this.play_list();
+      } else {
+        console.log(this.list);
+        console.log("有错误发生");
       }
     },
     play_list() {

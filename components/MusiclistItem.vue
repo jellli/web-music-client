@@ -37,7 +37,7 @@
       </template>
     </playBtn>
     <!-- todo:歌单播放 -->
-    <playBtn v-if="visible && type === 'playlist'" :playlist="playlist">
+    <playBtn v-if="visible && type === 'playlist'" :list="playlist">
       <template v-slot:pause>
         <div class="play-btn">
           <i class="fas fa-pause"></i>
