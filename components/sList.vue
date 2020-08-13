@@ -18,7 +18,17 @@
           </div>
         </div>
         <div class="sl-ctrl">
-          <button>收藏</button>
+          <playBtn :list="detial.music_ids">
+            <template v-slot:play><button>播放</button></template>
+          </playBtn>
+          <collectBtn :l_id="detial.l_id" v-if="!owned">
+            <template v-slot:collect>
+              <button>收藏</button>
+            </template>
+            <template v-slot:collected>
+              <button>取消收藏</button>
+            </template>
+          </collectBtn>
         </div>
       </div>
     </div>
@@ -27,8 +37,23 @@
 </template>
 
 <script>
+import collectBtn from "@/components/collectBtn";
+import playBtn from "@/components/playBtn";
 export default {
-  props: ["detial", "creator_pic"]
+  components: {
+    collectBtn,
+    playBtn
+  },
+  props: ["detial", "creator_pic"],
+  computed: {
+    owned() {
+      if (this.$store.state.isLogin) {
+        return this.$store.state.userName === this.detial.created_by;
+      } else {
+        false;
+      }
+    }
+  }
 };
 </script>
 
@@ -60,7 +85,9 @@ export default {
         }
       }
       .sl-ctrl {
+        display: flex;
         button {
+          margin-right: 10px;
           cursor: pointer;
           padding: 5px 10px;
           border: none;
