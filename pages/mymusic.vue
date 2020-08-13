@@ -15,6 +15,7 @@
           <showMusicList
             :list_data="user_collected_list"
             title="收藏的歌单"
+            @reload="reloadCollectedMusicLists"
             @getDetial="getListDetial"
           />
         </div>
@@ -89,6 +90,7 @@ export default {
       pic_url: null,
       creator_pic: null,
       user_created_list: null,
+      user_collected_list: null,
       current_list_id: null
     };
   },
@@ -101,6 +103,15 @@ export default {
         }
       );
       this.user_created_list = user_created_list_res.data;
+    },
+    async reloadCollectedMusicLists() {
+      const user_collected_list_res = await this.$axios.post(
+        `${process.env.BACKEND_URL}/get/collected_musiclist`,
+        {
+          user_name: this.$store.state.userName
+        }
+      );
+      this.user_collected_list = user_collected_list_res.data;
     },
     async enterEdit(l_id) {
       this.detial = null;
@@ -196,6 +207,7 @@ export default {
     },
     reloadAll() {
       this.reloadCreatedMusicLists();
+      this.reloadCollectedMusicLists();
       this.getListDetial(this.current_list_id, true);
     }
   },

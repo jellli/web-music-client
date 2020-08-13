@@ -97,7 +97,11 @@
             </div>
             <div class="delete-list">
               <!-- todo -->
-              <removePlaylist @deleted="emitReload" :l_id="i.l_id">
+              <removePlaylist
+                @deleted="emitReload"
+                :l_id="i.l_id"
+                :owned="owned ? true : false"
+              >
                 <i class="far fa-trash-alt"></i>
               </removePlaylist>
             </div>
