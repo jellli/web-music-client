@@ -2,12 +2,15 @@
   <div class="register-form restrainer">
     <h1>注册</h1>
     <form>
-      <input type="text" placeholder="用户名" />
-      <input type="password" placeholder="密码" />
-      <input type="password" placeholder="重复密码" />
-      <input type="submit" value="注册" />
+      <input type="text" placeholder="用户名" v-model="user_name" />
+      <input type="password" placeholder="密码" v-model="user_pwd" />
+      <input type="password" placeholder="重复密码" v-model="user_pwd1" />
+      <input type="submit" value="注册" @click="register" />
       <div class="info-msg">
-        <span>已经有账号了吗？ <nuxt-link to="/login">登录</nuxt-link></span>
+        <span>
+          已经有账号了吗？
+          <nuxt-link to="/login">登录</nuxt-link>
+        </span>
       </div>
     </form>
   </div>
@@ -17,9 +20,45 @@
 export default {
   head() {
     return {
-      title: "注册"
+      title: "注册",
     };
-  }
+  },
+  data() {
+    return {
+      user_name: "",
+      user_pwd: "",
+      user_pwd1: "",
+    };
+  },
+  methods: {
+    async register(e) {
+      e.preventDefault();
+      if (this.user_name.length === 0 || this.user_pwd.length === 0) {
+        this.$message({
+          message: "用户名和密码不能为空！",
+          type: "warning",
+        });
+      } else if (this.user_pwd != this.user_pwd1) {
+        this.$message({
+          message: "密码必须一致",
+          typ: "warning",
+        });
+      } else {
+        const res = await this.$axios.post(
+          `${process.env.BACKEND_URL}/register`,
+          {
+            user_name: this.user_name,
+            user_pwd: this.user_pwd,
+          }
+        );
+        this.$message({
+          message: "注册成功！",
+          type: "success",
+        });
+        this.$router.push(`/login`);
+      }
+    },
+  },
 };
 </script>
 
