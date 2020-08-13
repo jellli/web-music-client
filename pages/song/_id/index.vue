@@ -16,7 +16,14 @@
           </nuxt-link>
         </div>
         <div class="music-ctrl">
-          <button @click="play" class="play-btn">播放</button>
+          <playBtn :m_id="this.$route.params.id">
+            <template v-slot:pause>
+              <button class="play-btn">暂停</button>
+            </template>
+            <template v-slot:play>
+              <button class="play-btn">播放</button>
+            </template>
+          </playBtn>
         </div>
       </div>
     </div>
@@ -32,6 +39,7 @@
 
 <script>
 import comment from "@/components/comment";
+import playBtn from "@/components/playBtn";
 export default {
   data() {
     return {
@@ -40,15 +48,10 @@ export default {
     };
   },
   components: {
-    comment
+    comment,
+    playBtn
   },
   methods: {
-    play() {
-      this.$store.commit("setCurrentId", this.$route.params.id);
-      if (this.$route.params.id === this.$store.state.currentId) {
-        this.$store.commit("togglePlayingState");
-      }
-    },
     async reloadComments() {
       // 获取评论
       const c = await this.$axios.post(

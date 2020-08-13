@@ -27,6 +27,7 @@
       title="你喜欢的音乐"
       subtitle="重复聆听你的挚爱"
       :content="liked_music"
+      type="song"
     />
   </div>
 </template>
@@ -68,7 +69,7 @@ export default {
     );
     const temp = [];
     songs_res.data.songs.forEach(async song => {
-      console.log(song.ar);
+      // console.log(song.ar);
       const al = await $axios.get(
         `${process.env.MUSIC_API_URL}/album?id=${song.al.id}`
       );
