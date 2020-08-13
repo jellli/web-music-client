@@ -29,14 +29,14 @@
     <div class="song-fake-data" v-else></div>
     <div class="song-ctrl">
       <div class="btns">
-        <i class="fas fa-backward"></i>
+        <i class="fas fa-backward" @click="prevSong"></i>
         <i
           class="fas fa-play-circle"
           @click="play"
           v-if="getIsPlaying === false"
         ></i>
         <i class="fas fa-pause-circle" @click="play" v-else></i>
-        <i class="fas fa-forward"></i>
+        <i class="fas fa-forward" @click="nextSong"></i>
       </div>
       <div class="progress">
         <span>
@@ -65,6 +65,7 @@
       </div>
     </div>
     <div class="song-nav">
+      <playlist />
       <div class="volume">
         <i
           class="fas fa-volume-mute"
@@ -94,7 +95,11 @@
   </div>
 </template>
 <script>
+import playlist from "@/components/playlist";
 export default {
+  components: {
+    playlist
+  },
   data() {
     return {
       playUrl: "",
@@ -107,14 +112,27 @@ export default {
   },
   methods: {
     play() {
-      this.$store.commit("togglePlayingState");
+      if (
+        this.$store.state.currentId.length === 0 &&
+        this.$store.state.playlist.length !== 0
+      ) {
+        this.$store.commit("setCurrentId", this.$store.state.playlist[0]);
+        this.$store.commit("togglePlayingState");
+      } else if (this.$store.state.currentId.length !== 0) {
+        this.$store.commit("togglePlayingState");
+      } else {
+        this.$message({
+          message: "当前没有歌曲可以播放",
+          type: "warning"
+        });
+      }
     },
     timeLine() {
       this.currentTime = player.currentTime;
       this.duration = player.duration;
       if (player.currentTime === player.duration) {
+        this.nextSong();
         player.currentTime = 0;
-        this.$store.commit("togglePlayingState");
       }
     },
     setProgress(event) {
@@ -134,6 +152,36 @@ export default {
       } else {
         this.temp = this.volume;
         this.volume = 0;
+      }
+    },
+    prevSong() {
+      if (this.$store.state.playlist.indexOf(this.getPlayId) === 0) {
+        this.$store.commit(
+          "setCurrentId",
+          this.$store.state.playlist[this.$store.state.playlist.length - 1]
+        );
+      } else {
+        this.$store.commit(
+          "setCurrentId",
+          this.$store.state.playlist[
+            this.$store.state.playlist.indexOf(this.getPlayId) - 1
+          ]
+        );
+      }
+    },
+    nextSong() {
+      if (
+        this.$store.state.playlist.indexOf(this.getPlayId) ===
+        this.$store.state.playlist.length - 1
+      ) {
+        this.$store.commit("setCurrentId", this.$store.state.playlist[0]);
+      } else {
+        this.$store.commit(
+          "setCurrentId",
+          this.$store.state.playlist[
+            this.$store.state.playlist.indexOf(this.getPlayId) + 1
+          ]
+        );
       }
     }
   },
@@ -164,6 +212,7 @@ export default {
             message: "因版权问题该音乐不提供播放,请尝试其他歌曲",
             type: "warning"
           });
+          this.nextSong();
         }
       } catch (error) {
         console.log(error);
@@ -183,13 +232,11 @@ export default {
   },
   mounted() {
     const player = document.getElementById("player");
-    const pr = document.getElementById("pr");
-    const vo = document.getElementById("vo");
   }
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 $height: 90px;
 .player {
   width: 100vw;
@@ -286,6 +333,7 @@ $height: 90px;
   justify-content: flex-end;
   align-items: center;
 }
+
 .volume {
   display: flex;
   align-items: center;
@@ -315,7 +363,7 @@ $height: 90px;
     transition: all ease 0.2s;
   }
 }
-.volume-tooltip {
+.el-tooltip__popper.is-dark.volume-tooltip {
   background: #282828;
   border: 1px #000 solid;
   color: #282828;

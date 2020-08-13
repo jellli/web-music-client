@@ -4,7 +4,8 @@ export const state = () => ({
   currentId: "",
   userName: null,
   pic: null,
-  user: null
+  user: null,
+  playlist: []
 });
 
 export const mutations = {
@@ -31,5 +32,15 @@ export const mutations = {
     state.userName = null;
     state.pic = null;
     state.user = null;
+  },
+  addToPlaylist(state, id) {
+    state.playlist.push(id);
+  },
+  removeFromPlaylist(state, id) {
+    let index = state.playlist.indexOf(id);
+    state.playlist.slice(index, 1);
+  },
+  setPlaylist(state, playlist) {
+    state.playlist = playlist;
   }
 };
