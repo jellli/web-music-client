@@ -3,7 +3,7 @@
     <div class="like-song-btn">
       <i
         class="fas fa-heart"
-        v-if="likedMusic.includes(m_id)"
+        v-if="likedMusic && likedMusic.includes(m_id)"
         @click="dislikeSong"
         style="color:#af3030"
       ></i>
@@ -17,7 +17,11 @@ export default {
   props: ["m_id"],
   computed: {
     likedMusic() {
-      return this.$store.state.user.liked_music;
+      if (this.$store.state.isLogin) {
+        return this.$store.state.user.liked_music;
+      } else {
+        return false;
+      }
     }
   },
   methods: {

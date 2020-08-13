@@ -59,23 +59,25 @@ export default {
     showMusicList
   },
   async asyncData({ $axios, store }) {
-    const user_created_list_res = await $axios.post(
-      `${process.env.BACKEND_URL}/get/created_musiclist`,
-      {
-        user_name: store.state.userName
-      }
-    );
-    const user_collected_list_res = await $axios.post(
-      `${process.env.BACKEND_URL}/get/collected_musiclist`,
-      {
-        user_name: store.state.userName
-      }
-    );
-    // console.log(user_collected_list_res);
-    return {
-      user_created_list: user_created_list_res.data,
-      user_collected_list: user_collected_list_res.data
-    };
+    if (store.state.isLogin) {
+      const user_created_list_res = await $axios.post(
+        `${process.env.BACKEND_URL}/get/created_musiclist`,
+        {
+          user_name: store.state.userName
+        }
+      );
+      const user_collected_list_res = await $axios.post(
+        `${process.env.BACKEND_URL}/get/collected_musiclist`,
+        {
+          user_name: store.state.userName
+        }
+      );
+      // console.log(user_collected_list_res);
+      return {
+        user_created_list: user_created_list_res.data,
+        user_collected_list: user_collected_list_res.data
+      };
+    }
   },
   data() {
     return {
@@ -198,7 +200,9 @@ export default {
     }
   },
   mounted() {
-    this.getLikedDetial();
+    if (this.$store.state.isLogin) {
+      this.getLikedDetial();
+    }
   }
 };
 </script>
