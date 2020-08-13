@@ -7,14 +7,21 @@
       trigger="click"
       popper-class="playlist-list"
     >
-      <ul class="playlist-list" v-if="songs.length !== 0">
-        <li
-          v-for="song in songs"
-          :key="song.id"
-          @click="play(song.id)"
-          class="playlist-item"
-        >
-          {{ song.name }}
+      <ul class="playlist-list" v-if="songs && songs.length !== 0">
+        <li v-for="song in songs" :key="song.id" class="playlist-item">
+          <div
+            class="list-item"
+            @click="play(song.id)"
+            :style="currentId === song.id ? `color:#1db954` : ``"
+          >
+            {{ song.name }}
+          </div>
+          <div class="list-ctrl">
+            <likeSong :m_id="song.id" />
+            <cMbtn :music_id="song.id">
+              <i class="fas fa-folder-plus"></i>
+            </cMbtn>
+          </div>
         </li>
       </ul>
       <h3 v-else>播放列表为空</h3>
@@ -42,7 +49,13 @@
 </template>
 
 <script>
+import cMbtn from "@/components/cMbtn";
+import likeSong from "@/components/likeSong";
 export default {
+  components: {
+    cMbtn,
+    likeSong
+  },
   data() {
     return {
       songs: []
@@ -61,16 +74,8 @@ export default {
         this.$store.commit("setCurrentId", id);
         this.$store.commit("togglePlayingState");
       }
-    }
-  },
-  computed: {
-    playlist() {
-      return this.$store.state.playlist.length;
-    }
-  },
-  watch: {
-    async playlist() {
-      // console.log("yes");
+    },
+    async getSongs() {
       const query = this.$store.state.playlist
         .map(id => id.toString())
         .join(",");
@@ -78,6 +83,31 @@ export default {
         `${process.env.MUSIC_API_URL}/song/detail?ids=${query}`
       );
       this.songs = res.data.songs;
+    }
+  },
+  computed: {
+    playlist() {
+      return this.$store.state.playlist.length;
+    },
+    isLogin() {
+      return this.$store.state.isLogin;
+    },
+    currentId() {
+      return this.$store.state.currentId;
+    },
+    user() {
+      return this.$store.state.user;
+    }
+  },
+  watch: {
+    playlist() {
+      this.getSongs();
+    },
+    isLogin() {
+      this.getSongs();
+    },
+    user() {
+      this.getSongs();
     }
   }
 };
@@ -98,9 +128,23 @@ export default {
 .playlist-list {
   .playlist-item {
     padding: 7px 12px;
+    position: relative;
     cursor: pointer;
     &:hover {
       background: rgba(#fff, 0.2);
+    }
+    .list-item {
+    }
+    .list-ctrl {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      font-size: 16px;
+      top: calc(50% - 10px);
+      right: 10px;
+      & > * {
+        margin-left: 10px;
+      }
     }
   }
 }

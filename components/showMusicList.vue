@@ -206,7 +206,6 @@ ul {
     }
   }
   .list-ctrl {
-    z-index: 999;
     position: absolute;
     display: flex;
     align-items: center;

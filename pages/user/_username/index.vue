@@ -124,7 +124,7 @@ export default {
     );
     const query = [];
     const liked_music_temp = [];
-    if (liked_music_res[0].liked_music.length !== 0) {
+    if (liked_music_res) {
       liked_music_res[0].liked_music.forEach(id => {
         query.push(id.toString());
       });

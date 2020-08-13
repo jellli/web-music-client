@@ -54,7 +54,10 @@ export default {
   .list-content {
     width: 100%;
     .none {
-      margin-top: 15px;
+      height: 100px;
+      display: flex;
+      // justify-content: center;
+      align-items: center;
     }
     .items {
       overflow: auto;
