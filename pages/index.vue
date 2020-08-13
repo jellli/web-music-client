@@ -9,12 +9,14 @@
       <Musiclist
         title="推荐歌单"
         subtitle="欣赏我们精心挑选的歌单"
-        :content="hotList"
+        :content="hot_musiclist"
+        type="playlist"
       />
       <Musiclist
         title="热门音乐"
         subtitle="收听最近的热门单曲"
         :content="hotMusic.slice(0, 6)"
+        type="song"
       />
     </div>
   </div>
@@ -37,13 +39,9 @@ export default {
     const artists_list = await $axios.$get(
       `${BASE_URL}/top/artists?offset=0&limit=9`
     );
-    const hot_list = await $axios.$get(
-      `${BASE_URL}/top/playlist?limit=6&cat=%e6%ac%a7%e7%be%8e`
-    );
     const hot_music = await $axios.$get(`${BASE_URL}/top/list?idx=8`);
 
     let artistsList = [];
-    let hotList = [];
     let hotMusic = [];
 
     artists_list.artists.map(item => {
@@ -54,17 +52,6 @@ export default {
       artistsList.push({
         id,
         baseUrl: "artist",
-        title,
-        subtitle,
-        picUrl
-      });
-    });
-
-    hot_list.playlists.map(item => {
-      const title = item.name;
-      const subtitle = item.description;
-      const picUrl = item.coverImgUrl;
-      hotList.push({
         title,
         subtitle,
         picUrl
@@ -90,7 +77,24 @@ export default {
       });
     });
 
-    return { artistsList, hotList, hotMusic };
+    // 获取热门歌单
+    const hot_musiclist_res = await $axios.get(
+      `${process.env.BACKEND_URL}/get/hot_musiclist`
+    );
+    const hot_musiclist_temp = [];
+    hot_musiclist_res.data.slice(0, 6).forEach(list => {
+      const item = {
+        id: list.l_id,
+        title: list.list_name,
+        subtitle: list.list_desc === null ? "" : list.list_desc,
+        picUrl: list.list_cover,
+        baseUrl: "playlist",
+        playlist: list.music_ids
+      };
+      hot_musiclist_temp.push(item);
+    });
+
+    return { artistsList, hotMusic, hot_musiclist: hot_musiclist_temp };
   }
 };
 </script>
