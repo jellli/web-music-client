@@ -47,6 +47,8 @@
     </div>
     <div class="menu-title" @click="isOpen = !isOpen">
       <span>{{ title }}</span>
+    </div>
+    <div class="add-list-btn">
       <svg
         v-if="owned"
         t="1596872179387"
@@ -139,13 +141,21 @@ export default {
     emitGetLikedDetial() {
       this.$emit(`getLikedDetial`);
     },
-    submit() {
-      this.$axios.post(`${process.env.BACKEND_URL}/create/musiclist`, {
-        user_name: this.$store.state.userName,
-        list_name: this.list_name
-      });
-      this.popup = false;
-      this.$emit(`reload`);
+    async submit() {
+      if (this.list_name.length > 0) {
+        await this.$axios.post(`${process.env.BACKEND_URL}/create/musiclist`, {
+          user_name: this.$store.state.userName,
+          list_name: this.list_name
+        });
+        this.list_name = "";
+        this.popup = false;
+        this.$emit(`reload`);
+      } else {
+        this.$message({
+          message: "歌单名不能为空",
+          type: "error"
+        });
+      }
     }
   },
   computed: {
@@ -163,6 +173,7 @@ ul {
 .menu {
   font-size: 1.2rem;
   padding: 10px;
+  position: relative;
   .menu-title {
     padding: 10px;
     display: flex;
@@ -232,6 +243,7 @@ ul {
   width: 100vw;
   height: 100vh;
   background: rgba(#000, 0.2);
+  z-index: 999;
   .msg-box {
     width: 480px;
     height: 210px;
@@ -290,5 +302,11 @@ ul {
       // background: rgba(#fff, 0.1);
     }
   }
+}
+.add-list-btn {
+  position: absolute;
+  cursor: pointer;
+  top: 20px;
+  right: 20px;
 }
 </style>
