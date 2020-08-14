@@ -21,6 +21,12 @@
             <cMbtn :music_id="song.id">
               <i class="fas fa-folder-plus"></i>
             </cMbtn>
+            <div
+              class="remove-from-playlist"
+              @click="removeFromPlaylist(song.id)"
+            >
+              <i class="fas fa-minus"></i>
+            </div>
           </div>
         </li>
       </ul>
@@ -83,6 +89,9 @@ export default {
         `${process.env.MUSIC_API_URL}/song/detail?ids=${query}`
       );
       this.songs = res.data.songs;
+    },
+    removeFromPlaylist(id) {
+      this.$store.commit("removeFromPlaylist", id);
     }
   },
   computed: {
@@ -116,6 +125,7 @@ export default {
 <style lang="scss">
 .el-popover.el-popper.playlist-list {
   border: none;
+  min-height: 300px;
 }
 .playlist-component {
   margin-right: 10px;
