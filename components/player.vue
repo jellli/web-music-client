@@ -248,6 +248,9 @@ export default {
       } else {
         player.pause();
       }
+    },
+    currentTime() {
+      this.$store.commit("setCurrentTime", this.currentTime);
     }
   },
   mounted() {

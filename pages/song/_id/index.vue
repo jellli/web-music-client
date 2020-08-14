@@ -25,9 +25,9 @@
             </template>
           </playBtn>
         </div>
+        <lyric :m_id="this.$route.params.id" />
       </div>
     </div>
-    <!-- todo 传入props -->
     <comment
       :comments="comments"
       :m_id="m_id"
@@ -40,6 +40,7 @@
 <script>
 import comment from "@/components/comment";
 import playBtn from "@/components/playBtn";
+import lyric from "@/components/lyric";
 export default {
   data() {
     return {
@@ -49,7 +50,8 @@ export default {
   },
   components: {
     comment,
-    playBtn
+    playBtn,
+    lyric
   },
   methods: {
     async reloadComments() {
@@ -71,12 +73,7 @@ export default {
         );
         comments[i]["pic"] = res.data.user_pic;
       }
-      // 愚蠢但有用
       this.comments = comments;
-      // this.hackReset = false;
-      // this.$nextTick(() => {
-      //   this.hackReset = true;
-      // });
     }
   },
 
@@ -122,7 +119,7 @@ export default {
 }
 .song-header {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 4fr;
   margin-bottom: 40px;
 }
 .song-data {
@@ -138,13 +135,13 @@ export default {
   }
 }
 .album-pic {
-  margin: 0 auto;
+  // margin: 0 auto;
   width: 200px;
   height: 200px;
   img {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
+    border-radius: 2px;
   }
 }
 .music-ctrl {

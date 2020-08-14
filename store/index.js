@@ -5,7 +5,8 @@ export const state = () => ({
   userName: null,
   pic: null,
   user: null,
-  playlist: []
+  playlist: [],
+  currentTime: 0
 });
 
 export const mutations = {
@@ -42,5 +43,8 @@ export const mutations = {
   },
   setPlaylist(state, playlist) {
     state.playlist = playlist;
+  },
+  setCurrentTime(state, currentTime) {
+    state.currentTime = currentTime;
   }
 };
