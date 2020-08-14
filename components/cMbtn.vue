@@ -8,7 +8,7 @@
         <div class="showLists-title">
           <span>创建的歌单</span>
         </div>
-        <ul>
+        <ul v-if="user_created_list && user_created_list.length > 0">
           <li
             :class="
               `showLists-item ${[
@@ -28,6 +28,14 @@
             </div>
           </li>
         </ul>
+        <div v-else>
+          <span @click="visible = false">
+            你还没有创建任何歌单
+            <nuxt-link to="/mymusic" style="font-size:16px;color:#1db954"
+              >去创建！</nuxt-link
+            >
+          </span>
+        </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="visible = false">取 消</el-button>
@@ -53,7 +61,7 @@ export default {
   methods: {
     async submit() {
       if (this.current_list_id) {
-        this.$axios.post(`${process.env.BACKEND_URL}/collect/music`, {
+        await this.$axios.post(`${process.env.BACKEND_URL}/collect/music`, {
           l_id: this.current_list_id,
           music_id: this.music_id
         });
