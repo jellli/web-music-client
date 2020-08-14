@@ -1,5 +1,12 @@
 <template>
-  <div class="player">
+  <div
+    class="player"
+    :style="
+      `transition:all ease 0.3s; ${
+        isOpen ? '' : 'transform: translateY(85px);'
+      }`
+    "
+  >
     <!-- vue中使用ref获取页面元素 -->
     <audio
       :src="this.playUrl"
@@ -7,6 +14,18 @@
       @timeupdate="timeLine"
       ref="player"
     ></audio>
+    <div class="stick-lock">
+      <div @click="isOpen = !isOpen">
+        <i
+          class="fas fa-angle-down"
+          :style="
+            `transition:all ease 0.3s; ${
+              isOpen ? '' : 'transform: rotate(180deg);'
+            }`
+          "
+        ></i>
+      </div>
+    </div>
     <div class="player-song-data" v-if="JSON.stringify(data) !== '{}'">
       <div class="player-song-cover">
         <img :src="data.al.picUrl" />
@@ -107,7 +126,8 @@ export default {
       currentTime: 0,
       duration: 0,
       volume: 0.5,
-      temp: 0
+      temp: 0,
+      isOpen: true
     };
   },
   methods: {
@@ -246,7 +266,8 @@ $height: 90px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   border-top: #030306 solid 1px;
-  background: #141414;
+  // background: #141414;
+  background: linear-gradient(to top, #141414, 90%, #212121);
 }
 .player-song-data {
   display: flex;
@@ -367,5 +388,26 @@ $height: 90px;
   background: #282828;
   border: 1px #000 solid;
   color: #282828;
+}
+.stick-lock {
+  position: absolute;
+  top: -100px;
+  right: 20px;
+  width: 70px;
+  height: 100px;
+  // background: #1db954;
+  border-top: 20px solid transparent;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 20px solid #2e2e2e;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  & > * {
+    position: relative;
+    bottom: -19px;
+    cursor: pointer;
+  }
 }
 </style>
