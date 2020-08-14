@@ -38,7 +38,7 @@ export const mutations = {
   },
   removeFromPlaylist(state, id) {
     let index = state.playlist.indexOf(id);
-    state.playlist.slice(index, 1);
+    state.playlist.splice(index, 1);
   },
   setPlaylist(state, playlist) {
     state.playlist = playlist;
