@@ -21,6 +21,9 @@
         </nuxt-link>
       </div>
       <div class="music-ctrl">
+        <div class="add-to-playlist" @click="addToPlaylist(item.id)">
+          <i class="fas fa-plus"></i>
+        </div>
         <likeSong :m_id="bestMatch.id" />
         <cMbtn :music_id="bestMatch.id">
           <i class="fas fa-folder-plus"></i>
@@ -54,16 +57,22 @@ export default {
     }
   },
   methods: {
-    play(id) {
-      if (this.$store.state.currentId == id) {
-        this.$store.commit("togglePlayingState");
-      } else if (this.$store.state.isPlaying) {
-        this.$store.commit("togglePlayingState");
-        this.$store.commit("setCurrentId", id);
-        this.$store.commit("togglePlayingState");
+    addToPlaylist(id, showMsg = true) {
+      if (this.$store.state.playlist.includes(id)) {
+        if (showMsg) {
+          this.$message({
+            message: "该歌曲已存在",
+            type: "info"
+          });
+        }
       } else {
-        this.$store.commit("setCurrentId", id);
-        this.$store.commit("togglePlayingState");
+        if (showMsg) {
+          this.$message({
+            message: "已添加到播放列表",
+            type: "info"
+          });
+        }
+        this.$store.commit("addToPlaylist", id);
       }
     }
   }
