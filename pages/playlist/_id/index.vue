@@ -1,7 +1,7 @@
 <template>
   <div v-if="detial" class="restrainer">
     <sList :detial="detial" />
-    <songsList :songs="songs" v-if="songs" />
+    <songsList :songs="songs" v-if="songs.length > 0" />
     <h2 v-else>该歌单里还没添加任何歌曲</h2>
   </div>
 </template>
@@ -14,12 +14,6 @@ export default {
     sList,
     songsList
   },
-  // data() {
-  //   return {
-  //     detial: null,
-  //     songs: null
-  //   };
-  // },
   async asyncData({ params, $axios }) {
     // console.log(params.id);
     const detial = await $axios.post(
@@ -28,7 +22,7 @@ export default {
         l_id: parseInt(params.id)
       }
     );
-    // console.log(detial.data);
+    console.log(detial.data);
     if (detial.data[0].music_ids.length !== 0) {
       // 获取歌单中所有歌曲详情
       const query = [];
@@ -56,6 +50,11 @@ export default {
       return {
         detial: detial.data[0],
         songs: temp
+      };
+    } else {
+      return {
+        detial: detial.data[0],
+        songs: []
       };
     }
   }

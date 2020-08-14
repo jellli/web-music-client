@@ -15,6 +15,7 @@
           <showMusicList
             :list_data="user_collected_list"
             title="收藏的歌单"
+            :owned="false"
             @reload="reloadCollectedMusicLists"
             @getDetial="getListDetial"
           />
@@ -24,7 +25,7 @@
             <sList :detial="detial" :creator_pic="creator_pic" />
             <songsList
               :songs="songs"
-              v-if="songs"
+              v-if="songs.length > 0"
               :list_id="current_list_id"
               @reload="reloadAll"
             />
@@ -86,7 +87,7 @@ export default {
       src: null,
       detial: null,
       edit: null,
-      songs: null,
+      songs: [],
       pic_url: null,
       creator_pic: null,
       user_created_list: null,
@@ -130,6 +131,7 @@ export default {
     async getListDetial(listId, force = false) {
       if (listId !== this.current_list_id || force) {
         this.edit = null;
+        this.songs = [];
         // 获取用户创建的歌单详情
         const detial = await this.$axios.post(
           `${process.env.BACKEND_URL}/get/musiclist_detail`,
@@ -180,7 +182,8 @@ export default {
         creator_pic: this.$store.state.pic,
         created_by: this.$store.state.userName,
         list_cover:
-          "https://web-music.oss-cn-shenzhen.aliyuncs.com/static/3099b3803ad9496896c43f22fe9be8c4.png"
+          "https://web-music.oss-cn-shenzhen.aliyuncs.com/static/3099b3803ad9496896c43f22fe9be8c4.png",
+        music_ids: this.$store.state.user.liked_music
       };
       const query = this.$store.state.user.liked_music
         .map(item => item.toString())
@@ -205,10 +208,12 @@ export default {
       this.songs = temp;
       this.current_list_id = "liked";
     },
-    reloadAll() {
+    reloadAll(reloadDetial = true) {
       this.reloadCreatedMusicLists();
       this.reloadCollectedMusicLists();
-      this.getListDetial(this.current_list_id, true);
+      if (reloadDetial) {
+        this.getListDetial(this.current_list_id, true);
+      }
     }
   },
   mounted() {
