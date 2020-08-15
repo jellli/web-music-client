@@ -118,11 +118,26 @@
           <div class="avatar">
             <img :src="this.$store.state.pic" />
           </div>
-          <div class="username">
-            <nuxt-link :to="`/user/${this.$store.state.userName}`">
-              {{ this.$store.state.userName }}
-            </nuxt-link>
-          </div>
+          <el-dropdown trigger="click">
+            <div class="username" style="cursor:pointer">
+              <h4>
+                {{ this.$store.state.userName }}
+              </h4>
+            </div>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>
+                <nuxt-link :to="`/user/${this.$store.state.userName}`">
+                  我的主页
+                </nuxt-link>
+              </el-dropdown-item>
+              <el-dropdown-item>我的设置</el-dropdown-item>
+              <el-dropdown-item>
+                <div @click="logout">
+                  登出
+                </div>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
       </div>
     </div>
@@ -130,13 +145,24 @@
 </template>
 <script>
 // import mapMutations from "vuex";
-export default {};
+export default {
+  methods: {
+    logout() {
+      this.$store.commit("reset");
+      this.$message({ message: "登出成功", type: "success" });
+      this.$router.push("/");
+    }
+  }
+};
 </script>
 <style lang="scss" scoped>
 .navbar {
   width: 100vw;
   height: 60px;
+  z-index: 999;
   background: #141414;
+  position: sticky;
+  top: 0;
   a {
     color: #939393;
     font-size: 1rem;

@@ -1,36 +1,94 @@
 <template>
-  <div class="music-list-item">
+  <div
+    class="music-list-item"
+    @mouseover="visible = true"
+    @mouseleave="visible = false"
+  >
     <div class="music-pic">
       <img :src="picUrl" />
     </div>
     <div class="music-title">
-      <nuxt-link :to="`${baseUrl}/${id}`" v-if="baseUrl">{{ title }}</nuxt-link>
+      <nuxt-link :to="`/${baseUrl}/${id}`" v-if="baseUrl">{{
+        title
+      }}</nuxt-link>
       <span v-else>
         {{ title }}
       </span>
     </div>
     <div class="music-subtitle">
-      <nuxt-link :to="`${subtitle.baseUrl}/${subtitle.id}`" v-if="subtitle.id">
+      <nuxt-link :to="`/${subtitle.baseUrl}/${subtitle.id}`" v-if="subtitle.id">
         {{ subtitle.name }}
       </nuxt-link>
       <span v-else>
         {{ subtitle }}
       </span>
     </div>
+    <!-- 歌曲播放 -->
+    <playBtn v-if="visible && type === 'song'" :m_id="id">
+      <template v-slot:pause>
+        <div class="play-btn">
+          <i class="fas fa-pause"></i>
+        </div>
+      </template>
+      <template v-slot:play>
+        <div class="play-btn">
+          <i class="fas fa-play"></i>
+        </div>
+      </template>
+    </playBtn>
+    <!-- todo:歌单播放 -->
+    <playBtn v-if="visible && type === 'playlist'" :list="playlist">
+      <template v-slot:pause>
+        <div class="play-btn">
+          <i class="fas fa-pause"></i>
+        </div>
+      </template>
+      <template v-slot:play>
+        <div class="play-btn">
+          <i class="fas fa-play"></i>
+        </div>
+      </template>
+    </playBtn>
   </div>
 </template>
 
 <script>
+import playBtn from "@/components/playBtn";
 export default {
   // baseUrl作用为链接到详情页添加链接前缀
   // 传入内容为字符串形式，无需左右两端"/"
   // 如 baseUrl:"song"
-  props: ["picUrl", "title", "subtitle", "baseUrl", "id"]
+  props: ["picUrl", "title", "subtitle", "baseUrl", "id", "type", "playlist"],
+  components: {
+    playBtn
+  },
+  data() {
+    return {
+      visible: false
+    };
+  }
 };
 </script>
 
 <style lang="scss" scoped>
+.play-btn {
+  width: 35px;
+  height: 35px;
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  border-radius: 50%;
+  background: #1db954;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  i {
+    font-size: 0.8rem;
+  }
+}
 .music-list-item {
+  position: relative;
   width: 166.4px;
   // height: 228px;
   padding: 16px;

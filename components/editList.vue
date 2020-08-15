@@ -9,7 +9,7 @@
         </tr>
         <tr>
           <td>歌单描述</td>
-          <td><textarea v-model="list_desc" rows="4"></textarea></td>
+          <td><textarea v-model="list_desc" rows="8"></textarea></td>
         </tr>
         <tr>
           <td></td>
@@ -23,35 +23,54 @@
       </table>
 
       <div class="edit-cover">
-        <el-image
-          style="width: 150px; height: 150px"
-          :src="pic_url"
-          fit="cover"
-        >
-        </el-image>
-        <span>编辑封面</span>
+        <uploadImg :originSrc="pic_url" @change="setImg" size="150" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import uploadImg from "@/components/uploadImg";
 export default {
+  components: {
+    uploadImg
+  },
   props: ["pic_url", "l_id"],
   data() {
     return {
-      list_name: null,
-      list_desc: null
+      list_name: "",
+      list_desc: "",
+      list_cover: null
     };
   },
   methods: {
     async handleSubmit() {
-      await this.$axios.post(`${process.env.BACKEND_URL}/update/musiclist`, {
-        list_name: this.list_name,
-        list_desc: this.list_desc,
-        l_id: this.l_id
-      });
-      this.$emit("reload");
+      if (this.list_name.length !== 0) {
+        const data = new FormData();
+        data.append("list_name", this.list_name);
+        data.append("list_desc", this.list_desc);
+        data.append("l_id", this.l_id);
+        if (this.cover !== null) {
+          data.append("list_cover", this.list_cover);
+        }
+        await this.$axios.post(
+          `${process.env.BACKEND_URL}/update/musiclist`,
+          data
+        );
+        this.$emit("reload");
+        this.$emit("edited");
+        this.$message({
+          message: "修改歌单信息成功!",
+          type: "success"
+        });
+      } else {
+        this.$message.error({
+          message: "歌单名称不能为空！"
+        });
+      }
+    },
+    setImg(file) {
+      this.list_cover = file;
     }
   }
 };

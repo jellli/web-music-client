@@ -1,5 +1,12 @@
 <template>
-  <div class="player">
+  <div
+    class="player"
+    :style="
+      `transition:all ease 0.3s; ${
+        isOpen ? '' : 'transform: translateY(85px);'
+      }`
+    "
+  >
     <!-- vue中使用ref获取页面元素 -->
     <audio
       :src="this.playUrl"
@@ -7,6 +14,18 @@
       @timeupdate="timeLine"
       ref="player"
     ></audio>
+    <div class="stick-lock">
+      <div @click="isOpen = !isOpen">
+        <i
+          class="fas fa-angle-down"
+          :style="
+            `transition:all ease 0.3s; ${
+              isOpen ? '' : 'transform: rotate(180deg);'
+            }`
+          "
+        ></i>
+      </div>
+    </div>
     <div class="player-song-data" v-if="JSON.stringify(data) !== '{}'">
       <div class="player-song-cover">
         <img :src="data.al.picUrl" />
@@ -29,14 +48,14 @@
     <div class="song-fake-data" v-else></div>
     <div class="song-ctrl">
       <div class="btns">
-        <i class="fas fa-backward"></i>
+        <i class="fas fa-backward" @click="prevSong"></i>
         <i
           class="fas fa-play-circle"
           @click="play"
           v-if="getIsPlaying === false"
         ></i>
         <i class="fas fa-pause-circle" @click="play" v-else></i>
-        <i class="fas fa-forward"></i>
+        <i class="fas fa-forward" @click="nextSong"></i>
       </div>
       <div class="progress">
         <span>
@@ -65,6 +84,7 @@
       </div>
     </div>
     <div class="song-nav">
+      <playlist />
       <div class="volume">
         <i
           class="fas fa-volume-mute"
@@ -94,7 +114,11 @@
   </div>
 </template>
 <script>
+import playlist from "@/components/playlist";
 export default {
+  components: {
+    playlist
+  },
   data() {
     return {
       playUrl: "",
@@ -102,19 +126,33 @@ export default {
       currentTime: 0,
       duration: 0,
       volume: 0.5,
-      temp: 0
+      temp: 0,
+      isOpen: true
     };
   },
   methods: {
     play() {
-      this.$store.commit("togglePlayingState");
+      if (
+        this.$store.state.currentId.length === 0 &&
+        this.$store.state.playlist.length !== 0
+      ) {
+        this.$store.commit("setCurrentId", this.$store.state.playlist[0]);
+        this.$store.commit("togglePlayingState");
+      } else if (this.$store.state.currentId.length !== 0) {
+        this.$store.commit("togglePlayingState");
+      } else {
+        this.$message({
+          message: "当前没有歌曲可以播放",
+          type: "warning"
+        });
+      }
     },
     timeLine() {
       this.currentTime = player.currentTime;
       this.duration = player.duration;
       if (player.currentTime === player.duration) {
+        this.nextSong();
         player.currentTime = 0;
-        this.$store.commit("togglePlayingState");
       }
     },
     setProgress(event) {
@@ -134,6 +172,36 @@ export default {
       } else {
         this.temp = this.volume;
         this.volume = 0;
+      }
+    },
+    prevSong() {
+      if (this.$store.state.playlist.indexOf(this.getPlayId) === 0) {
+        this.$store.commit(
+          "setCurrentId",
+          this.$store.state.playlist[this.$store.state.playlist.length - 1]
+        );
+      } else {
+        this.$store.commit(
+          "setCurrentId",
+          this.$store.state.playlist[
+            this.$store.state.playlist.indexOf(this.getPlayId) - 1
+          ]
+        );
+      }
+    },
+    nextSong() {
+      if (
+        this.$store.state.playlist.indexOf(this.getPlayId) ===
+        this.$store.state.playlist.length - 1
+      ) {
+        this.$store.commit("setCurrentId", this.$store.state.playlist[0]);
+      } else {
+        this.$store.commit(
+          "setCurrentId",
+          this.$store.state.playlist[
+            this.$store.state.playlist.indexOf(this.getPlayId) + 1
+          ]
+        );
       }
     }
   },
@@ -164,6 +232,7 @@ export default {
             message: "因版权问题该音乐不提供播放,请尝试其他歌曲",
             type: "warning"
           });
+          this.nextSong();
         }
       } catch (error) {
         console.log(error);
@@ -179,17 +248,18 @@ export default {
       } else {
         player.pause();
       }
+    },
+    currentTime() {
+      this.$store.commit("setCurrentTime", this.currentTime);
     }
   },
   mounted() {
     const player = document.getElementById("player");
-    const pr = document.getElementById("pr");
-    const vo = document.getElementById("vo");
   }
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 $height: 90px;
 .player {
   width: 100vw;
@@ -199,7 +269,8 @@ $height: 90px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   border-top: #030306 solid 1px;
-  background: #141414;
+  // background: #141414;
+  background: linear-gradient(to top, #141414, 90%, #212121);
 }
 .player-song-data {
   display: flex;
@@ -286,6 +357,7 @@ $height: 90px;
   justify-content: flex-end;
   align-items: center;
 }
+
 .volume {
   display: flex;
   align-items: center;
@@ -315,9 +387,30 @@ $height: 90px;
     transition: all ease 0.2s;
   }
 }
-.volume-tooltip {
+.el-tooltip__popper.is-dark.volume-tooltip {
   background: #282828;
   border: 1px #000 solid;
   color: #282828;
+}
+.stick-lock {
+  position: absolute;
+  top: -100px;
+  right: 20px;
+  width: 70px;
+  height: 100px;
+  // background: #1db954;
+  border-top: 20px solid transparent;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 20px solid #2e2e2e;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  & > * {
+    position: relative;
+    bottom: -19px;
+    cursor: pointer;
+  }
 }
 </style>

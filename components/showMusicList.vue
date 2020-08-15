@@ -47,6 +47,8 @@
     </div>
     <div class="menu-title" @click="isOpen = !isOpen">
       <span>{{ title }}</span>
+    </div>
+    <div class="add-list-btn">
       <svg
         v-if="owned"
         t="1596872179387"
@@ -68,6 +70,19 @@
     </div>
     <transition name="fade">
       <ul v-if="isOpen">
+        <li v-if="owned">
+          <div class="menu-item" @click="emitGetLikedDetial">
+            <div class="list-cover">
+              <img
+                src="https://web-music.oss-cn-shenzhen.aliyuncs.com/static/3099b3803ad9496896c43f22fe9be8c4.png"
+              />
+            </div>
+            <div class="list-info">
+              <h3>我喜欢的音乐</h3>
+              {{ liked_music.length }} 首
+            </div>
+          </div>
+        </li>
         <li v-for="i in list_data" :key="i.l_id" class="m-i">
           <div class="menu-item" @click="emitGetDetial(i.l_id)">
             <div class="list-cover">
@@ -80,50 +95,17 @@
           </div>
           <div class="list-ctrl">
             <div class="edit-list" @click="emitEnterEdit(i.l_id)" v-if="owned">
-              <svg
-                t="1597040673974"
-                class="icon"
-                viewBox="0 0 1024 1024"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                p-id="8530"
-                width="20"
-                height="20"
-              >
-                <path
-                  d="M768 896H256a128 128 0 0 1-128-128V256a128 128 0 0 1 128-128h256a42.666667 42.666667 0 0 1 0 85.333333H256a42.666667 42.666667 0 0 0-42.666667 42.666667v512a42.666667 42.666667 0 0 0 42.666667 42.666667h512a42.666667 42.666667 0 0 0 42.666667-42.666667v-256a42.666667 42.666667 0 0 1 85.333333 0v256a128 128 0 0 1-128 128z m-408.405333-232.917333a64 64 0 0 1 0-90.325334l45.141333-45.184 90.325333 90.325334-45.141333 45.184a64 64 0 0 1-90.325333 0z m165.589333-75.264l-90.325333-90.325334 351.232-351.232a64 64 0 1 1 90.325333 90.325334z"
-                  p-id="8531"
-                  fill="#ffffff"
-                ></path>
-              </svg>
+              <i class="fas fa-edit"></i>
             </div>
             <div class="delete-list">
-              <svg
-                t="1597041091003"
-                class="icon"
-                viewBox="0 0 1024 1024"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                p-id="9357"
-                width="20"
-                height="20"
+              <!-- todo -->
+              <removePlaylist
+                @deleted="emitReload"
+                :l_id="i.l_id"
+                :owned="owned ? true : false"
               >
-                <path
-                  d="M704 960H320c-52.9 0-96-43.1-96-96V256h576v608c0 52.9-43.1 96-96 96zM288 320v544c0 17.6 14.4 32 32 32h384c17.6 0 32-14.4 32-32V320H288z"
-                  fill="#ffffff"
-                  p-id="9358"
-                ></path>
-                <path
-                  d="M896 320H128c-17.7 0-32-14.3-32-32s14.3-32 32-32h768c17.7 0 32 14.3 32 32s-14.3 32-32 32zM384 756c-17.7 0-32-14.3-32-32V492c0-17.7 14.3-32 32-32s32 14.3 32 32v232c0 17.7-14.3 32-32 32zM512 756c-17.7 0-32-14.3-32-32V492c0-17.7 14.3-32 32-32s32 14.3 32 32v232c0 17.7-14.3 32-32 32zM640 756c-17.7 0-32-14.3-32-32V492c0-17.7 14.3-32 32-32s32 14.3 32 32v232c0 17.7-14.3 32-32 32z"
-                  fill="#ffffff"
-                  p-id="9359"
-                ></path>
-                <path
-                  d="M720 320H304V160c0-52.9 43.1-96 96-96h224c52.9 0 96 43.1 96 96v160z m-352-64h288v-96c0-17.6-14.4-32-32-32H400c-17.6 0-32 14.4-32 32v96z"
-                  fill="#ffffff"
-                  p-id="9360"
-                ></path>
-              </svg>
+                <i class="far fa-trash-alt"></i>
+              </removePlaylist>
             </div>
           </div>
         </li>
@@ -133,7 +115,11 @@
 </template>
 
 <script>
+import removePlaylist from "@/components/removePlaylist";
 export default {
+  components: {
+    removePlaylist
+  },
   props: ["owned", "list_data", "title"],
   data() {
     return {
@@ -149,12 +135,32 @@ export default {
     emitGetDetial(l_id) {
       this.$emit(`getDetial`, l_id);
     },
-    submit() {
-      this.$axios.post(`${process.env.BACKEND_URL}/create/musiclist`, {
-        user_name: this.$store.state.userName,
-        list_name: this.list_name
-      });
-      this.popup = false;
+    emitReload() {
+      this.$emit(`reload`);
+    },
+    emitGetLikedDetial() {
+      this.$emit(`getLikedDetial`);
+    },
+    async submit() {
+      if (this.list_name.length > 0) {
+        await this.$axios.post(`${process.env.BACKEND_URL}/create/musiclist`, {
+          user_name: this.$store.state.userName,
+          list_name: this.list_name
+        });
+        this.list_name = "";
+        this.popup = false;
+        this.$emit(`reload`);
+      } else {
+        this.$message({
+          message: "歌单名不能为空",
+          type: "error"
+        });
+      }
+    }
+  },
+  computed: {
+    liked_music() {
+      return this.$store.state.user.liked_music;
     }
   }
 };
@@ -167,6 +173,7 @@ ul {
 .menu {
   font-size: 1.2rem;
   padding: 10px;
+  position: relative;
   .menu-title {
     padding: 10px;
     display: flex;
@@ -210,13 +217,16 @@ ul {
     }
   }
   .list-ctrl {
-    z-index: 999;
     position: absolute;
     display: flex;
+    align-items: center;
     top: calc(50% - 10px);
     right: 10px;
     margin-left: auto;
     margin-right: 10px;
+    i {
+      font-size: 1rem;
+    }
     & > * {
       cursor: pointer;
       margin-left: 7px;
@@ -233,6 +243,7 @@ ul {
   width: 100vw;
   height: 100vh;
   background: rgba(#000, 0.2);
+  z-index: 999;
   .msg-box {
     width: 480px;
     height: 210px;
@@ -291,5 +302,11 @@ ul {
       // background: rgba(#fff, 0.1);
     }
   }
+}
+.add-list-btn {
+  position: absolute;
+  cursor: pointer;
+  top: 20px;
+  right: 20px;
 }
 </style>

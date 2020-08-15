@@ -3,13 +3,13 @@
     <div class="user-profile">
       <div class="user-avatar">
         <img :src="profile.user_pic" />
-        <input
+        <!-- <input
           ref="files"
           type="file"
           name="avatar"
           id="avatar"
           v-on:change="upload"
-        />
+        /> -->
       </div>
       <div class="user-info">
         <div class="username">{{ profile.user_name }}</div>
@@ -24,9 +24,22 @@
       </div>
     </div>
     <Musiclist
-      title="你喜欢的音乐"
+      :title="isUser ? '你喜欢的音乐' : `${params}喜欢的音乐`"
       subtitle="重复聆听你的挚爱"
-      :content="hotMusic.slice(0, 6)"
+      :content="liked_music"
+      type="song"
+    />
+    <Musiclist
+      :title="isUser ? '你创建的歌单' : `${params}创建的歌单`"
+      subtitle="重复聆听你的挚爱"
+      :content="created_musiclist"
+      type="playlist"
+    />
+    <Musiclist
+      :title="isUser ? '你收藏的歌单' : `${params}收藏的歌单`"
+      subtitle="重复聆听你的挚爱"
+      :content="collected_musiclist"
+      type="playlist"
     />
   </div>
 </template>
@@ -47,28 +60,107 @@ export default {
       title: "个人主页"
     };
   },
+  computed: {
+    isUser() {
+      return this.$store.state.userName === this.$route.params.username;
+    },
+    params() {
+      return this.$route.params.username;
+    }
+  },
   async asyncData({ $axios, params }) {
-    const BASE_URL = process.env.MUSIC_API_URL;
-    const hot_music = await $axios.$get(`${BASE_URL}/top/list?idx=8`);
+    // 获取用户数据
     const pro = await $axios.$post(`${process.env.BACKEND_URL}/get/user`, {
       user_name: params.username
     });
-    // const profile = JSON.parse(pro.replace(/'/g, `"`));
-
-    const hotMusic = [];
-
-    hot_music.playlist.tracks.map(item => {
-      const title = item.name;
-      const subtitle = item.ar[0].name;
-      const picUrl = item.al.picUrl;
-      hotMusic.push({
-        title,
-        subtitle,
-        picUrl
+    // 获取用户创建的歌单
+    const created_musiclist_res = await $axios.$post(
+      `${process.env.BACKEND_URL}/get/created_musiclist`,
+      {
+        user_name: params.username
+      }
+    );
+    const created_musiclist_temp = [];
+    if (created_musiclist_res) {
+      created_musiclist_res.forEach(list => {
+        const item = {
+          id: list.l_id,
+          title: list.list_name,
+          subtitle: list.list_desc === null ? "" : list.list_desc,
+          picUrl: list.list_cover,
+          baseUrl: "playlist",
+          playlist: list.music_ids
+        };
+        created_musiclist_temp.push(item);
       });
-    });
-
-    return { hotMusic, profile: pro[0] };
+    }
+    // 获取用户收藏的歌单
+    const collected_musiclist_res = await $axios.$post(
+      `${process.env.BACKEND_URL}/get/collected_musiclist`,
+      {
+        user_name: params.username
+      }
+    );
+    const collected_musiclist_temp = [];
+    if (collected_musiclist_res) {
+      collected_musiclist_res.forEach(list => {
+        const item = {
+          id: list.l_id,
+          title: list.list_name,
+          subtitle: list.list_desc === null ? "" : list.list_desc,
+          picUrl: list.list_cover,
+          baseUrl: "playlist",
+          playlist: list.music_ids
+        };
+        collected_musiclist_temp.push(item);
+      });
+    }
+    // 获取用户喜欢的音乐
+    const liked_music_res = await $axios.$post(
+      `${process.env.BACKEND_URL}/get/liked_music`,
+      {
+        user_name: params.username
+      }
+    );
+    const query = [];
+    const liked_music_temp = [];
+    // console.log(liked_music_res);
+    if (
+      liked_music_res &&
+      liked_music_res[0] &&
+      liked_music_res[0].liked_music.length !== 0
+    ) {
+      liked_music_res[0].liked_music.forEach(id => {
+        query.push(id.toString());
+      });
+      const songs_res = await $axios.get(
+        `${process.env.MUSIC_API_URL}/song/detail?ids=${query.join(",")}`
+      );
+      songs_res.data.songs.forEach(async song => {
+        // console.log(song.ar);
+        const al = await $axios.get(
+          `${process.env.MUSIC_API_URL}/album?id=${song.al.id}`
+        );
+        const item = {
+          id: song.id,
+          title: song.name,
+          subtitle: {
+            id: song.ar[0].id,
+            name: song.ar[0].name,
+            baseUrl: "artist"
+          },
+          picUrl: al.data.songs[0].al.picUrl,
+          baseUrl: "song"
+        };
+        liked_music_temp.push(item);
+      });
+    }
+    return {
+      profile: pro[0],
+      liked_music: liked_music_temp,
+      created_musiclist: created_musiclist_temp,
+      collected_musiclist: collected_musiclist_temp
+    };
   },
   methods: {
     async upload(e) {

@@ -16,11 +16,18 @@
           </nuxt-link>
         </div>
         <div class="music-ctrl">
-          <button @click="play" class="play-btn">播放</button>
+          <playBtn :m_id="this.$route.params.id">
+            <template v-slot:pause>
+              <button class="play-btn">暂停</button>
+            </template>
+            <template v-slot:play>
+              <button class="play-btn">播放</button>
+            </template>
+          </playBtn>
         </div>
+        <lyric :m_id="this.$route.params.id" />
       </div>
     </div>
-    <!-- todo 传入props -->
     <comment
       :comments="comments"
       :m_id="m_id"
@@ -32,6 +39,8 @@
 
 <script>
 import comment from "@/components/comment";
+import playBtn from "@/components/playBtn";
+import lyric from "@/components/lyric";
 export default {
   data() {
     return {
@@ -40,15 +49,11 @@ export default {
     };
   },
   components: {
-    comment
+    comment,
+    playBtn,
+    lyric
   },
   methods: {
-    play() {
-      this.$store.commit("setCurrentId", this.$route.params.id);
-      if (this.$route.params.id === this.$store.state.currentId) {
-        this.$store.commit("togglePlayingState");
-      }
-    },
     async reloadComments() {
       // 获取评论
       const c = await this.$axios.post(
@@ -68,12 +73,7 @@ export default {
         );
         comments[i]["pic"] = res.data.user_pic;
       }
-      // 愚蠢但有用
       this.comments = comments;
-      // this.hackReset = false;
-      // this.$nextTick(() => {
-      //   this.hackReset = true;
-      // });
     }
   },
 
@@ -119,7 +119,7 @@ export default {
 }
 .song-header {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 4fr;
   margin-bottom: 40px;
 }
 .song-data {
@@ -135,13 +135,13 @@ export default {
   }
 }
 .album-pic {
-  margin: 0 auto;
+  // margin: 0 auto;
   width: 200px;
   height: 200px;
   img {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
+    border-radius: 2px;
   }
 }
 .music-ctrl {
