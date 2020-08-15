@@ -124,7 +124,6 @@ export default {
           l_id
         }
       );
-      // console.log(res);
       this.pic_url = res.data.list_cover;
     },
 
