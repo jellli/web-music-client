@@ -24,7 +24,7 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: #fff;
+  color: #d2d2d2;
 }
 body {
   background: #030306;

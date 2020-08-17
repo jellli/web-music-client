@@ -6,15 +6,17 @@
       </div>
       <div class="sl-info">
         <div class="sl-title">
-          <h2>{{ detial.list_name }}</h2>
+          <h1>{{ detial.list_name }}</h1>
         </div>
         <div class="sl-info-d">
           <div class="avatar">
             <el-avatar :size="50" :src="creator_pic"></el-avatar>
           </div>
           <div class="info">
-            {{ detial.created_by }}
-            <!-- {{ detial.created_time }} -->
+            <nuxt-link :to="`/user/${detial.created_by}`">
+              {{ detial.created_by }}
+            </nuxt-link>
+            <time> {{ created_time }} 创建 </time>
           </div>
         </div>
         <div class="sl-ctrl">
@@ -52,6 +54,10 @@ export default {
       } else {
         false;
       }
+    },
+    created_time() {
+      const date = new Date(parseInt(this.detial.created_time * 1000));
+      return this.$formatDate(date, "yyyy年MM月dd日");
     }
   }
 };
@@ -82,6 +88,19 @@ export default {
         align-items: center;
         & > * {
           margin-right: 15px;
+        }
+        .info {
+          & > * {
+            margin-right: 10px;
+          }
+          a {
+            color: #1db954;
+            font-size: 1.1rem;
+          }
+          time {
+            font-size: 14px;
+            color: #6c6c6c;
+          }
         }
       }
       .sl-ctrl {

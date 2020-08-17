@@ -13,20 +13,17 @@
         </div>
         <div class="input-area">
           <textarea rows="2" v-model="content" maxlength="140"></textarea>
-          <div class="post-ctrl">
-            <span>{{ 140 - content.length }}</span>
-            <input type="submit" value="评论" @click="submit" />
-          </div>
         </div>
       </div>
-      <!-- 暂时存在 -->
+      <div class="post-ctrl">
+        <span>{{ 140 - content.length }}</span>
+        <input type="submit" value="评论" @click="submit" />
+      </div>
       <div class="temp">
-        精彩评论<br />
-        <hr />
-        <br />
+        评论
       </div>
       <div class="comment-list">
-        <ul>
+        <ul v-if="comments.length > 0">
           <li v-for="comment in comments" :key="comment.c_id" class="list-item">
             <div class="n_comment">
               <div class="list-avatar">
@@ -37,10 +34,9 @@
                   <nuxt-link :to="`/user/${comment.author}`">
                     {{ comment.author }}
                   </nuxt-link>
+                  ：{{ comment.content }}
                 </div>
-                <div class="content">
-                  {{ comment.content }}
-                </div>
+                <div class="content"></div>
                 <div class="reply-content" v-if="comment.isReply">
                   <nuxt-link :to="`/user/${comment.o_author}`">
                     {{ comment.o_author }} </nuxt-link
@@ -49,6 +45,9 @@
               </div>
             </div>
             <div class="comment-operator">
+              <time>
+                {{ formatDate(comment.created_time) }}
+              </time>
               <span @click="openReplyArea(comment.c_id)">回复</span>
             </div>
             <div class="reply-area" v-if="openReply === comment.c_id">
@@ -68,6 +67,7 @@
             </div>
           </li>
         </ul>
+        <span v-else>还没有评论...</span>
       </div>
     </div>
   </div>
@@ -141,12 +141,35 @@ export default {
       } else {
         this.$message({ message: "请先登录再进行操作", type: "warning" });
       }
+    },
+    formatDate(time) {
+      const date = new Date(time * 1000);
+      return this.$formatDate(date, "yyyy年MM月dd日");
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.temp {
+  font-size: 1.2rem;
+  padding-bottom: 10px;
+  margin-bottom: 25px;
+  border-bottom: 2px #1bd954 solid;
+}
+.post-ctrl {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  input {
+    margin-left: 10px;
+  }
+}
+.list-item {
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  border-bottom: 1px dotted #444;
+}
 a {
   font-weight: bold;
   color: #1db954;
@@ -170,16 +193,14 @@ ul {
 .post-comment {
   display: flex;
   flex-direction: column;
+  padding: 0 20px;
   // align-items: center;
   .comment-header {
-    justify-content: space-evenly;
+    justify-content: space-between;
     display: flex;
   }
   .comment-list {
-    padding: 0 32px;
-    .list-item {
-      // margin-bottom: 5px;
-    }
+    // padding: 0 32px;
     .n_comment {
       padding: 0 10px;
       display: flex;
@@ -187,6 +208,7 @@ ul {
       // align-items: center;
       .list-content {
         width: calc(100% - 80px);
+        // display: flex;
       }
       .list-avatar {
         margin-right: 20px;
@@ -204,15 +226,21 @@ ul {
         margin-top: 15px;
         width: 100%;
         padding: 10px;
-        border: #707070 1px solid;
-        background: rgba(#fff, 0.2);
+        border: #2f2f2f 1px solid;
+        background: rgba(175, 175, 175, 0.2);
       }
     }
     .comment-operator {
       // padding: 10px;
+      width: calc(100% - 90px);
+      margin-left: auto;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       align-self: center;
+      time {
+        font-size: 14px;
+        color: #6c6c6c;
+      }
       span {
         &:hover {
           text-decoration: underline;
@@ -229,13 +257,14 @@ ul {
       // flex-direction: column;
       // align-items: flex-end;
       textarea {
+        margin-bottom: 10px;
         width: 100%;
         font-size: 1.2rem;
         padding: 16px 20px;
         resize: none;
         outline: none;
-        border: #707070 solid 1px;
-        background: rgba(#fff, 0.2);
+        border: #2f2f2f 1px solid;
+        background: rgba(175, 175, 175, 0.2);
       }
       .reply-ctrl {
         display: flex;
@@ -260,24 +289,17 @@ ul {
     }
   }
   .input-area {
-    width: 85%;
+    width: calc(100% - 100px);
+    height: 80px;
     textarea {
       width: 100%;
+      height: 100%;
       font-size: 1.2rem;
       padding: 16px 20px;
       resize: none;
       outline: none;
-      border: #707070 solid 1px;
-      background: rgba(#fff, 0.2);
-    }
-
-    .post-ctrl {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      input {
-        margin-left: 10px;
-      }
+      border: #2f2f2f 1px solid;
+      background: rgba(175, 175, 175, 0.2);
     }
   }
 }
