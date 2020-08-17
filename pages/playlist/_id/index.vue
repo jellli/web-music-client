@@ -1,6 +1,6 @@
 <template>
   <div v-if="detial" class="restrainer">
-    <sList :detial="detial" />
+    <sList :detial="detial" :creator_pic="user_pic" />
     <songsList :songs="songs" v-if="songs.length > 0" />
     <h2 v-else>该歌单里还没添加任何歌曲</h2>
   </div>
@@ -22,7 +22,12 @@ export default {
         l_id: parseInt(params.id)
       }
     );
-    console.log(detial.data);
+    const user_pic = await $axios.post(
+      `${process.env.BACKEND_URL}/get/user_pic`,
+      {
+        user_name: detial.data[0].created_by
+      }
+    );
     if (detial.data[0].music_ids.length !== 0) {
       // 获取歌单中所有歌曲详情
       const query = [];
@@ -49,12 +54,14 @@ export default {
       });
       return {
         detial: detial.data[0],
-        songs: temp
+        songs: temp,
+        user_pic: user_pic.data.user_pic
       };
     } else {
       return {
         detial: detial.data[0],
-        songs: []
+        songs: [],
+        user_pic: user_pic.data.user_pic
       };
     }
   }

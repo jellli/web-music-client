@@ -4,7 +4,7 @@ export const state = () => ({
   currentId: "",
   userName: null,
   pic: null,
-  user: null,
+  user: {},
   playlist: [],
   currentTime: 0
 });

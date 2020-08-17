@@ -1,6 +1,6 @@
 <template>
   <div class="lyric">
-    <ul ref="text" class="text">
+    <ul ref="text" class="text" v-if="lyric.length > 0">
       <li
         v-for="(item, i) in lyric"
         :key="item.time"
@@ -13,6 +13,7 @@
         {{ item.text }}
       </li>
     </ul>
+    <span v-else style="font-size:18px;color:#848484">纯音乐，请欣赏</span>
   </div>
 </template>
 
@@ -54,7 +55,9 @@ export default {
     const res = await this.$axios.get(
       `${process.env.MUSIC_API_URL}/lyric?id=${this.m_id}`
     );
-    this.formatLyric(res.data.lrc.lyric);
+    if (res.data.lrc) {
+      this.formatLyric(res.data.lrc.lyric);
+    }
   },
   watch: {
     currentTime() {
