@@ -24,7 +24,11 @@
       </div>
       <div class="comment-list">
         <ul v-if="comments.length > 0">
-          <li v-for="comment in comments" :key="comment.c_id" class="list-item">
+          <li
+            v-for="(comment, i) in comments"
+            :key="comment.c_id"
+            class="list-item"
+          >
             <div class="n_comment">
               <div class="list-avatar">
                 <img :src="comment.pic" />
@@ -48,7 +52,22 @@
               <time>
                 {{ formatDate(comment.created_time) }}
               </time>
-              <span @click="openReplyArea(comment.c_id)">回复</span>
+              <div class="r">
+                <span class="liked">
+                  <i
+                    class="fas fa-thumbs-up"
+                    v-if="isLogin && comment.liked.includes(username)"
+                    @click="dislikeComment(i, comment.c_id)"
+                  ></i>
+                  <i
+                    class="far fa-thumbs-up"
+                    @click="likeComment(i, comment.c_id)"
+                    v-else
+                  ></i>
+                  ( {{ comment.liked.length }} )
+                </span>
+                <span @click="openReplyArea(comment.c_id)">回复</span>
+              </div>
             </div>
             <div class="reply-area" v-if="openReply === comment.c_id">
               <textarea
@@ -86,6 +105,9 @@ export default {
   computed: {
     isLogin() {
       return this.$store.state.isLogin;
+    },
+    username() {
+      return this.$store.state.userName;
     }
   },
   methods: {
@@ -145,12 +167,41 @@ export default {
     formatDate(time) {
       const date = new Date(time * 1000);
       return this.$formatDate(date, "yyyy年MM月dd日");
+    },
+    async likeComment(index, c_id) {
+      console.log(this.comments[index]);
+      this.comments[index].liked.push(this.username);
+      await this.$axios.post(
+        `${process.env.BACKEND_URL}/update/comment/liked`,
+        {
+          user_name: this.username,
+          c_id
+        }
+      );
+    },
+    async dislikeComment(index, c_id) {
+      this.comments[index].liked.pop();
+      await this.$axios.post(
+        `${process.env.BACKEND_URL}/update/comment/disliked`,
+        {
+          user_name: this.username,
+          c_id
+        }
+      );
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.liked {
+  i {
+    transform: rotateY(180deg);
+  }
+  .fas.fa-thumbs-up {
+    color: #1bd954;
+  }
+}
 .temp {
   font-size: 1.2rem;
   padding-bottom: 10px;
@@ -240,6 +291,23 @@ ul {
       time {
         font-size: 14px;
         color: #6c6c6c;
+      }
+      .r {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        & > * {
+          padding-left: 10px;
+          // margin-left: 10px;
+        }
+        // & > *:not(:first-child) {
+        //   border-left: #444 2px solid;
+        // }
+        & > *:first-child {
+          &:hover {
+            text-decoration: none;
+          }
+        }
       }
       span {
         &:hover {
