@@ -12,14 +12,31 @@
         /> -->
       </div>
       <div class="user-info">
-        <div class="username">{{ profile.user_name }}</div>
+        <div class="username">
+          <h2>
+            {{ profile.user_name }}
+          </h2>
+          <followBtn
+            :followers="profile.follower"
+            :currentUsername="params"
+            v-if="!isUser"
+          />
+        </div>
         <div class="user-follow">
-          <span>关注: 15</span>
-          <span>粉丝: 8</span>
+          <div>
+            <span>关注: {{ profile.following.length }}</span>
+            <span>粉丝: {{ profile.follower.length }}</span>
+          </div>
         </div>
         <ul class="user-data">
-          <li>所在地区: Home</li>
-          <li>社交网络: OOO</li>
+          <li>
+            个人描述:
+            {{
+              profile.user_desc.length === 0
+                ? "TA还没填写个人描述"
+                : profile.user_desc
+            }}
+          </li>
         </ul>
       </div>
     </div>
@@ -46,6 +63,7 @@
 
 <script>
 import Musiclist from "@/components/Musiclist";
+import followBtn from "@/components/followBtn";
 export default {
   data() {
     return {
@@ -53,7 +71,8 @@ export default {
     };
   },
   components: {
-    Musiclist
+    Musiclist,
+    followBtn
   },
   head() {
     return {
@@ -183,6 +202,7 @@ export default {
   .user-avatar {
     width: 200px;
     height: 200px;
+    flex-shrink: 0;
     img {
       width: 100%;
       height: 100%;
@@ -192,12 +212,24 @@ export default {
     }
   }
   .user-info {
+    width: 100%;
     padding: 10px 35px;
     .username {
+      width: 100%;
+      // justify-content: space-between;
+      align-items: center;
+      display: flex;
       font-size: 2rem;
+      & > * {
+        margin-right: 2rem;
+      }
     }
   }
   .user-follow {
+    // width: 50%;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
     margin: 10px 0;
   }
   .user-data {
