@@ -1,8 +1,10 @@
 <template>
   <div v-if="detial" class="restrainer">
     <sList :detial="detial" :creator_pic="user_pic" />
-    <songsList :songs="songs" v-if="songs.length > 0" />
-    <h2 v-else>该歌单里还没添加任何歌曲</h2>
+    <div style="padding:0 20px">
+      <songsList :songs="songs" v-if="songs.length > 0" />
+      <h2 v-else>该歌单里还没添加任何歌曲</h2>
+    </div>
   </div>
 </template>
 

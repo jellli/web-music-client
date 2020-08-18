@@ -16,7 +16,7 @@
             <nuxt-link :to="`/user/${detial.created_by}`">
               {{ detial.created_by }}
             </nuxt-link>
-            <time> {{ created_time }} 创建 </time>
+            <time v-if="!detial.liked"> {{ created_time }} 创建 </time>
           </div>
         </div>
         <div class="sl-ctrl">
@@ -32,6 +32,7 @@
             </template>
           </collectBtn>
         </div>
+        <div class="desc">歌单描述: {{ detial.list_desc }}</div>
       </div>
     </div>
     <div class="sl-content"></div>
@@ -70,8 +71,8 @@ export default {
     display: flex;
     .cover {
       margin-right: 10px;
-      width: 180px;
-      height: 180px;
+      width: 220px;
+      height: 220px;
       img {
         width: 100%;
         height: 100%;
