@@ -16,6 +16,7 @@
           </nuxt-link>
         </div>
         <div class="music-ctrl">
+          <likedSong :m_id="parseInt(this.$route.params.id)" />
           <playBtn :m_id="this.$route.params.id">
             <template v-slot:pause>
               <button class="play-btn">暂停</button>
@@ -24,6 +25,11 @@
               <button class="play-btn">播放</button>
             </template>
           </playBtn>
+          <cMbtn :music_id="parseInt(this.$route.params.id)">
+            <el-button round size="mini" type="primary">
+              收藏到歌单
+            </el-button>
+          </cMbtn>
         </div>
         <lyric :m_id="this.$route.params.id" />
       </div>
@@ -41,6 +47,8 @@
 import comment from "@/components/comment";
 import playBtn from "@/components/playBtn";
 import lyric from "@/components/lyric";
+import likedSong from "@/components/likeSong";
+import cMbtn from "@/components/cMbtn";
 export default {
   data() {
     return {
@@ -51,7 +59,9 @@ export default {
   components: {
     comment,
     playBtn,
-    lyric
+    lyric,
+    likedSong,
+    cMbtn
   },
   methods: {
     async reloadComments() {
@@ -145,6 +155,14 @@ export default {
   }
 }
 .music-ctrl {
+  display: flex;
+  align-items: center;
+  & > * {
+    margin-right: 15px;
+  }
+  .like-song {
+    font-size: 1.4rem;
+  }
   .play-btn {
     margin: 20px 0;
     outline: none;
