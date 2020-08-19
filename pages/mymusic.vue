@@ -23,18 +23,21 @@
         <div class="right-side">
           <div v-if="detial">
             <sList :detial="detial" :creator_pic="creator_pic" />
-            <songsList
-              :songs="songs"
-              v-if="songs.length > 0"
-              :list_id="current_list_id"
-              @reload="reloadAll"
-            />
-            <h2 v-else>该歌单里还没添加任何歌曲</h2>
+            <div style="padding:0 20px">
+              <songsList
+                :songs="songs"
+                v-if="songs.length > 0"
+                :list_id="current_list_id"
+                @reload="reloadAll"
+              />
+              <h2 v-else>该歌单里还没添加任何歌曲</h2>
+            </div>
           </div>
           <div v-if="edit">
             <editList
               :pic_url="pic_url"
               :l_id="edit"
+              :detial="edit_detial"
               @reload="reloadCreatedMusicLists"
               @edited="getListDetial(edit)"
             />
@@ -92,7 +95,8 @@ export default {
       creator_pic: null,
       user_created_list: null,
       user_collected_list: null,
-      current_list_id: null
+      current_list_id: null,
+      edit_detial: {}
     };
   },
   methods: {
@@ -118,6 +122,13 @@ export default {
       this.detial = null;
       this.current_list_id = null;
       this.edit = l_id;
+      const detial = await this.$axios.post(
+        `${process.env.BACKEND_URL}/get/musiclist_detail`,
+        {
+          l_id: l_id
+        }
+      );
+      this.edit_detial = detial.data[0];
       const res = await this.$axios.post(
         `${process.env.BACKEND_URL}/get/list_cover`,
         {
@@ -176,7 +187,9 @@ export default {
       }
     },
     async getLikedDetial() {
+      this.edit = null;
       this.detial = {
+        liked: true,
         list_name: "我喜欢的音乐",
         creator_pic: this.$store.state.pic,
         created_by: this.$store.state.userName,
@@ -184,26 +197,28 @@ export default {
           "https://web-music.oss-cn-shenzhen.aliyuncs.com/static/3099b3803ad9496896c43f22fe9be8c4.png",
         music_ids: this.$store.state.user.liked_music
       };
-      const query = this.$store.state.user.liked_music
-        .map(item => item.toString())
-        .join(",");
-      const res = await this.$axios.get(
-        `${process.env.MUSIC_API_URL}/song/detail?ids=${query}`
-      );
       const temp = [];
-      // 处理数据
-      res.data.songs.forEach(async song => {
-        const al = await this.$axios.get(
-          `${process.env.MUSIC_API_URL}/album?id=${song.al.id}`
+      if (this.$store.state.user.liked_music.length > 0) {
+        const query = this.$store.state.user.liked_music
+          .map(item => item.toString())
+          .join(",");
+        const res = await this.$axios.get(
+          `${process.env.MUSIC_API_URL}/song/detail?ids=${query}`
         );
-        const item = {
-          id: song.id,
-          name: song.name,
-          artists: song.ar,
-          album_pic: al.data.songs[0].al.picUrl
-        };
-        temp.push(item);
-      });
+        // 处理数据
+        res.data.songs.forEach(async song => {
+          const al = await this.$axios.get(
+            `${process.env.MUSIC_API_URL}/album?id=${song.al.id}`
+          );
+          const item = {
+            id: song.id,
+            name: song.name,
+            artists: song.ar,
+            album_pic: al.data.songs[0].al.picUrl
+          };
+          temp.push(item);
+        });
+      }
       this.songs = temp;
       this.current_list_id = "liked";
     },

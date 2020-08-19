@@ -1,6 +1,6 @@
 <template>
   <div class="lyric">
-    <ul ref="text" class="text">
+    <ul ref="text" class="text" v-if="lyric.length > 0">
       <li
         v-for="(item, i) in lyric"
         :key="item.time"
@@ -13,6 +13,7 @@
         {{ item.text }}
       </li>
     </ul>
+    <span v-else style="font-size:18px;color:#848484">纯音乐，请欣赏</span>
   </div>
 </template>
 
@@ -38,9 +39,11 @@ export default {
           let obj = {};
           let time_arr = element.substr(1, element.length - 1).split(":"); //先把多余的“[”去掉，再分离出分、秒
           let s = parseInt(time_arr[0]) * 60 + Math.round(time_arr[1]); //把时间转换成与currentTime相同的类型，方便待会实现滚动效果
-          obj.time = s;
-          obj.text = text;
-          this.lyric.push(obj); //每一行歌词对象存到组件的lyric歌词属性里
+          if (text !== "") {
+            obj.time = s;
+            obj.text = text;
+            this.lyric.push(obj); //每一行歌词对象存到组件的lyric歌词属性里
+          }
         });
       }
     }
@@ -54,7 +57,9 @@ export default {
     const res = await this.$axios.get(
       `${process.env.MUSIC_API_URL}/lyric?id=${this.m_id}`
     );
-    this.formatLyric(res.data.lrc.lyric);
+    if (res.data.lrc) {
+      this.formatLyric(res.data.lrc.lyric);
+    }
   },
   watch: {
     currentTime() {

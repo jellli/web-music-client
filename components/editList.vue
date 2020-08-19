@@ -35,7 +35,7 @@ export default {
   components: {
     uploadImg
   },
-  props: ["pic_url", "l_id"],
+  props: ["pic_url", "l_id", "detial"],
   data() {
     return {
       list_name: "",
@@ -71,6 +71,12 @@ export default {
     },
     setImg(file) {
       this.list_cover = file;
+    }
+  },
+  watch: {
+    detial(val) {
+      this.list_name = val.list_name;
+      this.list_desc = val.list_desc;
     }
   }
 };

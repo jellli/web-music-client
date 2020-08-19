@@ -3,10 +3,10 @@
     <div class="restrainer">
       <div class="footer-left">
         <span>
-          Create By
-          <a href="#">Grey</a>
+          Created By
+          <a href="https://github.com/Greyy-Y">Grey</a>
           <span>&</span>
-          <a href="#">Hoon</a>
+          <a href="https://github.com/hothoney">Hoon</a>
         </span>
       </div>
       <div class="footer-right"></div>
@@ -20,7 +20,7 @@
 }
 footer {
   height: 200px;
-  background: #282828;
+  // background: #282828;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -30,6 +30,6 @@ a {
   color: #1db954;
 }
 span > span {
-  color: #1db954;
+  // color: #fff;
 }
 </style>

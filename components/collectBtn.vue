@@ -44,7 +44,7 @@ export default {
       return this.$store.state.isLogin;
     },
     collected() {
-      if (this.$store.state.user.collected_music_list) {
+      if (this.isLogin && this.$store.state.user.collected_music_list) {
         return this.$store.state.user.collected_music_list.includes(
           parseInt(this.l_id)
         );
