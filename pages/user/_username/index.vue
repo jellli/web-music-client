@@ -182,6 +182,7 @@ export default {
           baseUrl: "song"
         };
         liked_music_temp.push(item);
+        liked_music_temp.reverse();
       });
     }
     return {
