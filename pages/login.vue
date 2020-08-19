@@ -88,6 +88,14 @@ export default {
     @extend input;
     background: #1db954;
     border-radius: calc((1.3rem + 30px) / 2);
+    cursor: pointer;
+    box-shadow: inset -2px -2px 0px rgba( #000000,  0.7);
+    &:active{
+      box-shadow: inset 5px 5px 0px rgba( #000000,  0.7);
+    };
+    &:hover{
+      filter: brightness(1.1);
+    }
   }
   span {
     color: #939393;
