@@ -3,7 +3,7 @@
     <div class="like-song-btn">
       <i
         class="fas fa-heart"
-        v-if="likedMusic && likedMusic.includes(m_id)"
+        v-if="likedMusic && likedMusic.includes(parseInt(m_id))"
         @click="dislikeSong"
         style="color:#af3030"
       ></i>
@@ -63,4 +63,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.like-song {
+  cursor: pointer;
+}
+</style>

@@ -27,8 +27,13 @@
       </div>
     </div>
     <div class="player-song-data" v-if="JSON.stringify(data) !== '{}'">
-      <div class="player-song-cover">
-        <img :src="data.al.picUrl" />
+      <div class="player-song-cover" v-loading="loading">
+        <el-image
+          style="width: 100%; height: 100%"
+          :src="data.al.picUrl"
+          fit="cover"
+          :load="(loading = false)"
+        ></el-image>
       </div>
       <div>
         <div class="player-song-name">
@@ -127,7 +132,8 @@ export default {
       duration: 0,
       volume: 0.5,
       temp: 0,
-      isOpen: true
+      isOpen: true,
+      loading: false
     };
   },
   methods: {
@@ -217,6 +223,7 @@ export default {
     async getPlayId() {
       try {
         // 获取播放链接,如果有版权保护,播放链接为null
+        this.loading = true;
         const playUrl = await this.$axios.get(
           `${process.env.MUSIC_API_URL}/song/url?id=${this.$store.state.currentId}`
         );
@@ -227,7 +234,9 @@ export default {
           );
           this.data = detial.data.songs[0];
           this.playUrl = playUrl.data.data[0].url;
+          // this.loading = false;
         } else {
+          // this.loading = false;
           this.$message({
             message: "因版权问题该音乐不提供播放,请尝试其他歌曲",
             type: "warning"
