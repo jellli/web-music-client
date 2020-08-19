@@ -24,8 +24,18 @@
         </div>
         <div class="user-follow">
           <div>
-            <span>关注: {{ profile.following.length }}</span>
-            <span>粉丝: {{ profile.follower.length }}</span>
+            <span
+              >关注:
+              <nuxt-link :to="`${params}/following`">
+                {{ profile.following.length }}
+              </nuxt-link>
+            </span>
+            <span
+              >粉丝:
+              <nuxt-link :to="`${params}/followers`">
+                {{ profile.follower.length }}
+              </nuxt-link>
+            </span>
           </div>
         </div>
         <ul class="user-data">
