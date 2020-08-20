@@ -82,6 +82,7 @@ export default {
           }
         );
         comments[i]["pic"] = res.data.user_pic;
+        comments.reverse();
       }
       this.comments = comments;
     }
@@ -112,6 +113,7 @@ export default {
         comments[i]["pic"] = res.data.user_pic;
       }
     }
+    comments.reverse();
     return {
       name,
       m_id: params.id,

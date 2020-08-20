@@ -166,7 +166,7 @@ export default {
     },
     formatDate(time) {
       const date = new Date(time * 1000);
-      return this.$formatDate(date, "yyyy年MM月dd日");
+      return this.$formatDate(date, "yyyy年MM月dd日 hhh:mm:ss");
     },
     async likeComment(index, c_id) {
       console.log(this.comments[index]);
