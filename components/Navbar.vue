@@ -111,7 +111,10 @@
           <nuxt-link to="/login">登录</nuxt-link>
           <nuxt-link to="/register">注册</nuxt-link>
         </div>
-        <div class="user align-center" v-if="this.$store.state.isLogin === true">
+        <div
+          class="user align-center"
+          v-if="this.$store.state.isLogin === true"
+        >
           <div class="avatar">
             <img :src="this.$store.state.pic" />
           </div>
@@ -121,7 +124,9 @@
             </div>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
-                <nuxt-link :to="`/user/${this.$store.state.userName}`">我的主页</nuxt-link>
+                <nuxt-link :to="`/user/${this.$store.state.userName}`"
+                  >我的主页</nuxt-link
+                >
               </el-dropdown-item>
               <el-dropdown-item>
                 <nuxt-link to="/settings">我的设置</nuxt-link>
@@ -144,8 +149,8 @@ export default {
       this.$store.commit("reset");
       this.$message({ message: "登出成功", type: "success" });
       this.$router.push("/");
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -187,8 +192,8 @@ export default {
   .top-menu {
     padding: 0 40px;
     svg {
-      width: 20px;
-      height: 20px;
+      width: 23px;
+      height: 23px;
       margin-right: 5px;
     }
 
@@ -204,13 +209,19 @@ export default {
     .avatar {
       width: 40px;
       height: 40px;
-      margin-right: 18px;
+      margin-right: 10px;
       img {
         width: 100%;
         height: 100%;
         border: #fff 2px solid;
         border-radius: 50%;
         object-fit: cover;
+      }
+    }
+    .username > h4 {
+      transition: color linear 0.2s;
+      &:hover {
+        color: #1db954;
       }
     }
   }
