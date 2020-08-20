@@ -10,7 +10,7 @@
         </div>
         <div class="sl-info-d">
           <div class="avatar">
-            <el-avatar :size="50" :src="creator_pic"></el-avatar>
+            <el-avatar :size="50" :src="creator_pic" fit="cover"></el-avatar>
           </div>
           <div class="info">
             <nuxt-link :to="`/user/${detial.created_by}`">
@@ -73,6 +73,7 @@ export default {
       margin-right: 10px;
       width: 220px;
       height: 220px;
+      flex-shrink: 0;
       img {
         width: 100%;
         height: 100%;

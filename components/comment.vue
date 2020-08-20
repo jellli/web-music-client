@@ -76,7 +76,7 @@
                 maxlength="140"
               ></textarea>
               <div class="reply-ctrl">
-                <span>{{ 140 - content.length }}</span>
+                <span>{{ 140 - reply_content.length }}</span>
                 <input
                   type="button"
                   value="回复"
@@ -219,7 +219,9 @@ export default {
 .list-item {
   padding-bottom: 15px;
   margin-bottom: 20px;
-  border-bottom: 1px dotted #444;
+  &:not(:last-child) {
+    border-bottom: 1px dotted #444;
+  }
 }
 a {
   font-weight: bold;
