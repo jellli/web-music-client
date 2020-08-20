@@ -5,7 +5,7 @@
       round
       @click="handleClick"
       :loading="loading"
-      size="mini"
+      :size="size"
     >
       <!-- <i class="fas fa-plus" v-if="!isFollowed || !loading"></i>
       <i class="fas fa-check" v-else-if="isFollowed || !loading"></i> -->
@@ -25,6 +25,9 @@ export default {
     },
     currentUsername: {
       default: ""
+    },
+    size: {
+      default: "mini"
     }
   },
   data() {
@@ -41,7 +44,12 @@ export default {
       }
     },
     isFollowed() {
-      return this.followers.includes(this.username);
+      return (
+        this.followers.filter(item =>
+          Object.values(item).includes(this.username)
+        ).length > 0
+      );
+      // return Object.values(this.followers[0]).includes(this.username);
     }
   },
   methods: {
@@ -67,7 +75,9 @@ export default {
             type: "follow"
           });
           this.loading = false;
-          this.followers.push(this.$store.state.userName);
+          this.followers.push({
+            user_name: this.$store.state.username
+          });
         }
       } else {
         this.$message({ message: "请先登录再进行操作", type: "warning" });

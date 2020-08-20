@@ -46,10 +46,7 @@
       </div>
       <div class="please_login" v-else>
         <div class="pelase_login_svg">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 1104 916.056"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1104 916.056">
             <g id="_16" data-name="16" transform="translate(-168 -61.371)">
               <path
                 id="Path_1"
@@ -255,8 +252,12 @@
         </div>
         <div class="please_login_text">
           <h1>请登录</h1>
-            <span style="color:rgb(121,121,121);display:block;margin-bottom:20px">查看并管理你收藏的音乐</span>
-            <el-button type="primary" @click="()=>this.$router.push(`/login`)">立即登录</el-button>
+          <span style="color:rgb(121,121,121);display:block;margin-bottom:20px"
+            >查看并管理你收藏的音乐</span
+          >
+          <el-button type="primary" @click="() => this.$router.push(`/login`)"
+            >立即登录</el-button
+          >
         </div>
       </div>
     </div>
@@ -273,26 +274,26 @@ export default {
     sList,
     songsList,
     editList,
-    showMusicList,
+    showMusicList
   },
   async asyncData({ $axios, store }) {
     if (store.state.isLogin) {
       const user_created_list_res = await $axios.post(
         `${process.env.BACKEND_URL}/get/created_musiclist`,
         {
-          user_name: store.state.userName,
+          user_name: store.state.userName
         }
       );
       const user_collected_list_res = await $axios.post(
         `${process.env.BACKEND_URL}/get/collected_musiclist`,
         {
-          user_name: store.state.userName,
+          user_name: store.state.userName
         }
       );
       // console.log(user_collected_list_res);
       return {
         user_created_list: user_created_list_res.data,
-        user_collected_list: user_collected_list_res.data,
+        user_collected_list: user_collected_list_res.data
       };
     }
   },
@@ -308,7 +309,7 @@ export default {
       user_created_list: null,
       user_collected_list: null,
       current_list_id: null,
-      edit_detial: {},
+      edit_detial: {}
     };
   },
   methods: {
@@ -316,7 +317,7 @@ export default {
       const user_created_list_res = await this.$axios.post(
         `${process.env.BACKEND_URL}/get/created_musiclist`,
         {
-          user_name: this.$store.state.userName,
+          user_name: this.$store.state.userName
         }
       );
       this.user_created_list = user_created_list_res.data;
@@ -325,7 +326,7 @@ export default {
       const user_collected_list_res = await this.$axios.post(
         `${process.env.BACKEND_URL}/get/collected_musiclist`,
         {
-          user_name: this.$store.state.userName,
+          user_name: this.$store.state.userName
         }
       );
       this.user_collected_list = user_collected_list_res.data;
@@ -337,14 +338,14 @@ export default {
       const detial = await this.$axios.post(
         `${process.env.BACKEND_URL}/get/musiclist_detail`,
         {
-          l_id: l_id,
+          l_id: l_id
         }
       );
       this.edit_detial = detial.data[0];
       const res = await this.$axios.post(
         `${process.env.BACKEND_URL}/get/list_cover`,
         {
-          l_id,
+          l_id
         }
       );
       this.pic_url = res.data.list_cover;
@@ -358,22 +359,14 @@ export default {
         const detial = await this.$axios.post(
           `${process.env.BACKEND_URL}/get/musiclist_detail`,
           {
-            l_id: listId,
+            l_id: listId
           }
         );
         this.detial = detial.data[0];
-        // 获取创建者头像
-        const user_pic_res = await this.$axios.post(
-          `${process.env.BACKEND_URL}/get/user_pic`,
-          {
-            user_name: this.detial.created_by,
-          }
-        );
-        this.creator_pic = user_pic_res.data.user_pic;
         if (detial.data[0].music_ids.length !== 0) {
           // 获取歌单中所有歌曲详情
           const query = [];
-          detial.data[0].music_ids.forEach((id) => {
+          detial.data[0].music_ids.forEach(id => {
             query.push(id.toString());
           });
           const res = await this.$axios.get(
@@ -381,7 +374,7 @@ export default {
           );
           const temp = [];
           // 处理数据
-          res.data.songs.forEach(async (song) => {
+          res.data.songs.forEach(async song => {
             const al = await this.$axios.get(
               `${process.env.MUSIC_API_URL}/album?id=${song.al.id}`
             );
@@ -389,7 +382,7 @@ export default {
               id: song.id,
               name: song.name,
               artists: song.ar,
-              album_pic: al.data.songs[0].al.picUrl,
+              album_pic: al.data.songs[0].al.picUrl
             };
             temp.push(item);
           });
@@ -407,18 +400,18 @@ export default {
         created_by: this.$store.state.userName,
         list_cover:
           "https://web-music.oss-cn-shenzhen.aliyuncs.com/static/3099b3803ad9496896c43f22fe9be8c4.png",
-        music_ids: this.$store.state.user.liked_music,
+        music_ids: this.$store.state.user.liked_music
       };
       const temp = [];
       if (this.$store.state.user.liked_music.length > 0) {
         const query = this.$store.state.user.liked_music
-          .map((item) => item.toString())
+          .map(item => item.toString())
           .join(",");
         const res = await this.$axios.get(
           `${process.env.MUSIC_API_URL}/song/detail?ids=${query}`
         );
         // 处理数据
-        res.data.songs.forEach(async (song) => {
+        res.data.songs.forEach(async song => {
           const al = await this.$axios.get(
             `${process.env.MUSIC_API_URL}/album?id=${song.al.id}`
           );
@@ -426,7 +419,7 @@ export default {
             id: song.id,
             name: song.name,
             artists: song.ar,
-            album_pic: al.data.songs[0].al.picUrl,
+            album_pic: al.data.songs[0].al.picUrl
           };
           temp.push(item);
         });
@@ -440,13 +433,25 @@ export default {
       if (reloadDetial) {
         this.getListDetial(this.current_list_id, true);
       }
-    },
+    }
   },
   mounted() {
     if (this.$store.state.isLogin) {
       this.getLikedDetial();
     }
   },
+  watch: {
+    async detial() {
+      // 获取创建者头像
+      const user_pic_res = await this.$axios.post(
+        `${process.env.BACKEND_URL}/get/user_pic`,
+        {
+          user_name: this.detial.created_by
+        }
+      );
+      this.creator_pic = user_pic_res.data.user_pic;
+    }
+  }
 };
 </script>
 
@@ -479,10 +484,10 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
-  .please_login_svg{
+  .please_login_svg {
     width: 50%;
     height: 100%;
-    svg{
+    svg {
       width: 100%;
       height: 100%;
     }
