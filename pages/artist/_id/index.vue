@@ -8,13 +8,29 @@
         <span>{{ name }}</span>
       </div>
     </div>
-    <songsList :songs="hotSongs" />
+    <songsList
+      :songs="
+        hotSongs.slice((currentPage - 1) * 10, (currentPage - 1) * 10 + 9)
+      "
+    />
+    <el-pagination
+      :hide-on-single-page="true"
+      class="pagination"
+      :total="hotSongs.length"
+      :current-page.sync="currentPage"
+      background
+    ></el-pagination>
   </div>
 </template>
 
 <script>
 import songsList from "@/components/songsList";
 export default {
+  data() {
+    return {
+      currentPage: 1
+    };
+  },
   components: {
     songsList
   },
@@ -54,6 +70,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.pagination {
+  grid-row: 2;
+  grid-column: 2;
+  margin-top: 20px;
+  // display: flex;
+  // align-items: center;
+}
 .artist-detail {
   display: grid;
   grid-template-columns: 1fr 2fr;

@@ -31,12 +31,24 @@
     </div>
     <div class="search-result">
       <bestMatch v-if="this.result.length > 0" :bestMatch="result[0]" />
-      <searchList v-if="this.result.length > 0" :list="result.slice(1)" />
+      <searchList
+        v-if="this.result.length > 0"
+        :list="result.slice((currentPage - 1) * 10, (currentPage - 1) * 10 + 9)"
+      />
       <hotKeyword
         :hotKeyword="this.hotKeyword"
         :searchFunc="setKeyword"
-        v-if="this.result.length == 0"
+        v-if="this.result.length === 0"
       />
+      <el-pagination
+        v-if="result.length !== 0"
+        class="pagination"
+        :current-page.sync="currentPage"
+        :total="result.length"
+        small
+        background
+        :hide-on-single-page="true"
+      ></el-pagination>
     </div>
   </div>
 </template>
@@ -59,7 +71,8 @@ export default {
   data() {
     return {
       keyword: "",
-      result: []
+      result: [],
+      currentPage: 1
     };
   },
   methods: {
@@ -72,7 +85,7 @@ export default {
         event.preventDefault();
       }
       const res = await this.$axios.get(
-        `${process.env.MUSIC_API_URL}/search?keywords=${this.keyword}&limit=10`
+        `${process.env.MUSIC_API_URL}/search?keywords=${this.keyword}&limit=50`
       );
       const temp = [];
       res.data.result.songs.map(async item => {
@@ -149,5 +162,10 @@ export default {
   display: grid;
   grid-template-columns: 2fr 3fr;
   // align-self: start;
+}
+.pagination {
+  margin-top: 20px;
+  grid-row: 2;
+  grid-column: 2;
 }
 </style>

@@ -8,7 +8,6 @@
           fit="cover"
           :lazy="true"
         ></el-image>
-        <!-- <img :src="song.album_pic" /> -->
       </div>
       <div>
         <div class="songs-list-item-title">
