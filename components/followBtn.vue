@@ -76,7 +76,7 @@ export default {
           });
           this.loading = false;
           this.followers.push({
-            user_name: this.$store.state.username
+            user_name: this.$store.state.userName
           });
         }
       } else {
