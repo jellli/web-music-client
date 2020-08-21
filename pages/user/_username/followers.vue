@@ -42,6 +42,11 @@
 <script>
 import followBtn from "@/components/followBtn";
 export default {
+  head() {
+    return {
+      title: `${this.username}的粉丝列表`
+    };
+  },
   components: {
     followBtn
   },

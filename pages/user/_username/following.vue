@@ -41,6 +41,11 @@
 import followBtn from "@/components/followBtn";
 export default {
   components: { followBtn },
+  head() {
+    return {
+      title: `${this.username}的关注列表`
+    };
+  },
   computed: {
     username() {
       return this.$route.params.username;

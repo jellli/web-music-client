@@ -41,6 +41,11 @@
 import playBtn from "@/components/playBtn";
 import songsList from "@/components/songsList";
 export default {
+  head() {
+    return {
+      title: "歌手 - " + this.name
+    };
+  },
   data() {
     return {
       currentPage: 1,

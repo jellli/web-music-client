@@ -180,15 +180,18 @@ export default {
       return this.$formatDate(date, "yyyy年MM月dd日 hhh:mm:ss");
     },
     async likeComment(index, c_id) {
-      console.log(this.comments[index]);
-      this.comments[index].liked.push(this.username);
-      await this.$axios.post(
-        `${process.env.BACKEND_URL}/update/comment/liked`,
-        {
-          user_name: this.username,
-          c_id
-        }
-      );
+      if (this.$store.state.isLogin) {
+        this.comments[index].liked.push(this.username);
+        await this.$axios.post(
+          `${process.env.BACKEND_URL}/update/comment/liked`,
+          {
+            user_name: this.username,
+            c_id
+          }
+        );
+      } else {
+        this.$message({ message: "请先登录再进行操作", type: "warning" });
+      }
     },
     async dislikeComment(index, c_id) {
       this.comments[index].liked.pop();

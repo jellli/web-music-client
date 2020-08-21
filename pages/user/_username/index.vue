@@ -87,7 +87,7 @@ export default {
   },
   head() {
     return {
-      title: "个人主页"
+      title: `${this.params}的个人主页`
     };
   },
   computed: {

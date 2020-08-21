@@ -288,6 +288,11 @@ import songsList from "@/components/songsList";
 import editList from "@/components/editList";
 import showMusicList from "@/components/showMusicList";
 export default {
+  head() {
+    return {
+      title: "我的音乐"
+    };
+  },
   components: {
     sList,
     songsList,

@@ -50,6 +50,11 @@ import lyric from "@/components/lyric";
 import likedSong from "@/components/likeSong";
 import cMbtn from "@/components/cMbtn";
 export default {
+  head() {
+    return {
+      title: `${this.name} - ${this.artists.map(a => a.name).join(" ")}`
+    };
+  },
   data() {
     return {
       hackReset: true,

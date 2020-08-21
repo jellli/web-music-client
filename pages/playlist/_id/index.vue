@@ -12,6 +12,11 @@
 import sList from "@/components/sList";
 import songsList from "@/components/songsList";
 export default {
+  head() {
+    return {
+      title: "歌单详情 - " + this.detial.list_name
+    };
+  },
   components: {
     sList,
     songsList
