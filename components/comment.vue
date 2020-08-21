@@ -25,7 +25,10 @@
       <div class="comment-list">
         <ul v-if="comments.length > 0">
           <li
-            v-for="(comment, i) in comments"
+            v-for="(comment, i) in comments.slice(
+              (currentPage - 1) * 12,
+              (currentPage - 1) * 12 + 11
+            )"
             :key="comment.c_id"
             class="list-item"
           >
@@ -88,6 +91,13 @@
         </ul>
         <span v-else>还没有评论...</span>
       </div>
+      <el-pagination
+        :hide-on-single-page="true"
+        class="pagination"
+        :total="comments.length"
+        :current-page.sync="currentPage"
+        background
+      ></el-pagination>
     </div>
   </div>
 </template>
@@ -97,6 +107,7 @@ export default {
   props: ["comments", "m_id"],
   data() {
     return {
+      currentPage: 1,
       content: "",
       reply_content: "",
       openReply: null
