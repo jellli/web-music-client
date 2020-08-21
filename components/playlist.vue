@@ -2,35 +2,43 @@
   <div class="playlist-component" v-popover:popover>
     <el-popover
       ref="popover"
-      title="播放列表"
       width="350"
       trigger="click"
       popper-class="playlist-list"
     >
-      <ul class="playlist-list" v-if="songs && songs.length !== 0">
-        <li v-for="song in songs" :key="song.id" class="playlist-item">
-          <div
-            class="list-item"
-            @click="play(song.id)"
-            :style="currentId === song.id ? `color:#1db954` : ``"
-          >
-            {{ song.name }}
-          </div>
-          <div class="list-ctrl">
-            <likeSong :m_id="song.id" />
-            <cMbtn :music_id="song.id">
-              <i class="fas fa-folder-plus"></i>
-            </cMbtn>
+      <div class="playlist-title">
+        <h3>播放列表</h3>
+        <i
+          class="fas fa-trash trash-icon"
+          @click="() => this.$store.commit('setPlaylist', [])"
+        ></i>
+      </div>
+      <ul class="playlist-list-c" v-if="songs && songs.length !== 0">
+        <transition-group name="list">
+          <li v-for="song in songs" :key="song.id" class="playlist-item">
             <div
-              class="remove-from-playlist"
-              @click="removeFromPlaylist(song.id)"
+              class="list-item"
+              @click="play(song.id)"
+              :style="currentId === song.id ? `color:#1db954` : ``"
             >
-              <i class="fas fa-minus"></i>
+              {{ song.name }}
             </div>
-          </div>
-        </li>
+            <div class="list-ctrl">
+              <likeSong :m_id="song.id" />
+              <cMbtn :music_id="song.id">
+                <i class="fas fa-folder-plus"></i>
+              </cMbtn>
+              <div
+                class="remove-from-playlist"
+                @click="removeFromPlaylist(song.id)"
+              >
+                <i class="fas fa-minus"></i>
+              </div>
+            </div>
+          </li>
+        </transition-group>
       </ul>
-      <h3 v-else>播放列表为空</h3>
+      <span v-else style="padding:12px">播放列表为空</span>
     </el-popover>
     <svg
       slot="reference"
@@ -123,9 +131,44 @@ export default {
 </script>
 
 <style lang="scss">
+.trash-icon {
+  cursor: pointer;
+}
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.4s;
+}
+.list-leave-active {
+  position: absolute;
+}
+.list-move {
+  transition: transform 1s;
+}
+.list-enter, .list-leave-to
+/* .list-leave-active for below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateX(10px);
+  transform: translateX(80%);
+}
+.playlist-title {
+  width: 100%;
+  height: 1.3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #282828;
+  position: sticky;
+  padding: 25px 10px;
+  z-index: 9;
+  top: 0;
+}
 .el-popover.el-popper.playlist-list {
   border: none;
   min-height: 300px;
+  max-height: 400px;
+  position: relative;
+  overflow-y: auto;
+  padding: 0 5px;
 }
 .playlist-component {
   margin-right: 10px;
@@ -135,21 +178,21 @@ export default {
     cursor: pointer;
   }
 }
-.playlist-list {
+.playlist-list-c {
   .playlist-item {
+    font-size: 15px;
+    transition: all 0.4s;
     padding: 7px 12px;
     position: relative;
     cursor: pointer;
     &:hover {
       background: rgba(#fff, 0.2);
     }
-    .list-item {
-    }
     .list-ctrl {
       display: flex;
       align-items: center;
       position: absolute;
-      font-size: 16px;
+      font-size: 14px;
       top: calc(50% - 10px);
       right: 10px;
       & > * {
