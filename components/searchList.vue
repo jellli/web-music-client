@@ -25,7 +25,7 @@
             <cMbtn :music_id="item.id">
               <i class="fas fa-folder-plus"></i>
             </cMbtn>
-            <playBtn :m_id="item.id">
+            <playBtn :m_id="item.id" :list="list.map(a => a.id)">
               <template v-slot:pause><i class="fas fa-pause"></i></template>
               <template v-slot:play><i class="fas fa-play"></i></template>
             </playBtn>

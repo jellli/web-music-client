@@ -1,8 +1,22 @@
 <template>
   <div class="artist-detail restrainer">
     <div class="wrapper">
-      <div class="artist-img">
+      <div
+        class="artist-img"
+        @mouseover="visible = true"
+        @mouseout="visible = false"
+      >
         <img :src="picUrl" />
+        <transition name="playBtn">
+          <playBtn
+            :list="hotSongs.map(a => a.id)"
+            class="artist-play-btn"
+            v-show="visible"
+          >
+            <template v-slot:pause><i class="fas fa-pause"></i></template>
+            <template v-slot:play><i class="fas fa-play"></i></template>
+          </playBtn>
+        </transition>
       </div>
       <div class="artist-info">
         <span>{{ name }}</span>
@@ -24,15 +38,18 @@
 </template>
 
 <script>
+import playBtn from "@/components/playBtn";
 import songsList from "@/components/songsList";
 export default {
   data() {
     return {
-      currentPage: 1
+      currentPage: 1,
+      visible: false
     };
   },
   components: {
-    songsList
+    songsList,
+    playBtn
   },
   async asyncData({ $axios, params }) {
     const detial = await $axios.get(
@@ -70,6 +87,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.playBtn-enter,
+.playBtn-leave-to {
+  opacity: 0;
+}
+.playBtn-enter-active,
+.playBtn-leave-active {
+  transition: all 0.3s;
+}
+
+.artist-play-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 2rem;
+}
 .pagination {
   grid-row: 2;
   grid-column: 2;
@@ -90,6 +128,7 @@ export default {
 .artist-img {
   width: 300px;
   height: 300px;
+  position: relative;
   img {
     width: 100%;
     height: 100%;
