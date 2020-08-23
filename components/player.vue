@@ -273,7 +273,10 @@ export default {
     if (localStorage.getItem("playlist")) {
       this.$store.commit(
         "setPlaylist",
-        localStorage.getItem("playlist").split(",")
+        localStorage
+          .getItem("playlist")
+          .split(",")
+          .map(id => parseInt(id))
       );
     }
     if (localStorage.getItem("volume")) {
