@@ -27,18 +27,22 @@ export default {
   },
   methods: {
     handleClick() {
-      if (this.m_id) {
+      if (this.m_id && !this.list) {
         this.play(this.m_id);
-      } else if (this.list) {
+      } else if (this.list && !this.m_id) {
         this.play_list();
       } else {
-        console.log(this.list);
-        console.log("有错误发生");
+        this.play_list(this.m_id);
+        console.log("第三种");
       }
     },
-    play_list() {
+    play_list(m_id = null) {
       this.$store.commit("setPlaylist", this.list);
-      this.play(this.list[0]);
+      if (m_id) {
+        this.play(m_id);
+      } else {
+        this.play(this.list[0]);
+      }
     },
     play(m_id) {
       // 先获取url 如果不为null再切换状态

@@ -260,10 +260,28 @@ export default {
     },
     currentTime() {
       this.$store.commit("setCurrentTime", this.currentTime);
+    },
+    volume() {
+      localStorage.setItem("volume", this.volume);
     }
   },
   mounted() {
     const player = document.getElementById("player");
+    if (localStorage.getItem("id")) {
+      this.$store.commit("setCurrentId", parseInt(localStorage.getItem("id")));
+    }
+    if (localStorage.getItem("playlist")) {
+      this.$store.commit(
+        "setPlaylist",
+        localStorage
+          .getItem("playlist")
+          .split(",")
+          .map(id => parseInt(id))
+      );
+    }
+    if (localStorage.getItem("volume")) {
+      this.volume = parseFloat(localStorage.getItem("volume"));
+    }
   }
 };
 </script>

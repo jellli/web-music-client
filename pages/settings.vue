@@ -56,6 +56,11 @@
 // import { provinceAndCityData } from 'element-china-area-data';
 import uploadImg from "@/components/uploadImg";
 export default {
+  head() {
+    return {
+      title: "个人设置"
+    };
+  },
   data() {
     return {
       // options: provinceAndCityData,

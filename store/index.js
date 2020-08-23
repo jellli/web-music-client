@@ -18,6 +18,7 @@ export const mutations = {
   },
   setCurrentId(state, id) {
     state.currentId = id;
+    localStorage.setItem("id", id);
   },
   setUser(state, user) {
     state.user = user;
@@ -36,13 +37,16 @@ export const mutations = {
   },
   addToPlaylist(state, id) {
     state.playlist.push(id);
+    localStorage.setItem("playlist", state.playlist);
   },
   removeFromPlaylist(state, id) {
     let index = state.playlist.indexOf(id);
     state.playlist.splice(index, 1);
+    localStorage.setItem("playlist", state.playlist);
   },
   setPlaylist(state, playlist) {
     state.playlist = playlist;
+    localStorage.setItem("playlist", state.playlist);
   },
   setCurrentTime(state, currentTime) {
     state.currentTime = currentTime;

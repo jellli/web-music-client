@@ -25,7 +25,10 @@
       <div class="comment-list">
         <ul v-if="comments.length > 0">
           <li
-            v-for="(comment, i) in comments"
+            v-for="(comment, i) in comments.slice(
+              (currentPage - 1) * 12,
+              (currentPage - 1) * 12 + 11
+            )"
             :key="comment.c_id"
             class="list-item"
           >
@@ -76,7 +79,7 @@
                 maxlength="140"
               ></textarea>
               <div class="reply-ctrl">
-                <span>{{ 140 - content.length }}</span>
+                <span>{{ 140 - reply_content.length }}</span>
                 <input
                   type="button"
                   value="回复"
@@ -88,6 +91,13 @@
         </ul>
         <span v-else>还没有评论...</span>
       </div>
+      <el-pagination
+        :hide-on-single-page="true"
+        class="pagination"
+        :total="comments.length"
+        :current-page.sync="currentPage"
+        background
+      ></el-pagination>
     </div>
   </div>
 </template>
@@ -97,6 +107,7 @@ export default {
   props: ["comments", "m_id"],
   data() {
     return {
+      currentPage: 1,
       content: "",
       reply_content: "",
       openReply: null
@@ -166,18 +177,21 @@ export default {
     },
     formatDate(time) {
       const date = new Date(time * 1000);
-      return this.$formatDate(date, "yyyy年MM月dd日");
+      return this.$formatDate(date, "yyyy年MM月dd日 hhh:mm:ss");
     },
     async likeComment(index, c_id) {
-      console.log(this.comments[index]);
-      this.comments[index].liked.push(this.username);
-      await this.$axios.post(
-        `${process.env.BACKEND_URL}/update/comment/liked`,
-        {
-          user_name: this.username,
-          c_id
-        }
-      );
+      if (this.$store.state.isLogin) {
+        this.comments[index].liked.push(this.username);
+        await this.$axios.post(
+          `${process.env.BACKEND_URL}/update/comment/liked`,
+          {
+            user_name: this.username,
+            c_id
+          }
+        );
+      } else {
+        this.$message({ message: "请先登录再进行操作", type: "warning" });
+      }
     },
     async dislikeComment(index, c_id) {
       this.comments[index].liked.pop();
@@ -219,7 +233,9 @@ export default {
 .list-item {
   padding-bottom: 15px;
   margin-bottom: 20px;
-  border-bottom: 1px dotted #444;
+  &:not(:last-child) {
+    border-bottom: 1px dotted #444;
+  }
 }
 a {
   font-weight: bold;

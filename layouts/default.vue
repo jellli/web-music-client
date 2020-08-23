@@ -24,7 +24,8 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: #d2d2d2;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: "Noto Sans SC", sans-serif;
 }
 body {
   background: #030306;

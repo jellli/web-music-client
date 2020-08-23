@@ -50,6 +50,11 @@ import lyric from "@/components/lyric";
 import likedSong from "@/components/likeSong";
 import cMbtn from "@/components/cMbtn";
 export default {
+  head() {
+    return {
+      title: `${this.name} - ${this.artists.map(a => a.name).join(" ")}`
+    };
+  },
   data() {
     return {
       hackReset: true,
@@ -82,6 +87,7 @@ export default {
           }
         );
         comments[i]["pic"] = res.data.user_pic;
+        comments.reverse();
       }
       this.comments = comments;
     }
@@ -112,6 +118,7 @@ export default {
         comments[i]["pic"] = res.data.user_pic;
       }
     }
+    comments.reverse();
     return {
       name,
       m_id: params.id,

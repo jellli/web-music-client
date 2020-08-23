@@ -19,6 +19,11 @@ export default {
       {
         rel: "stylesheet",
         href: "https://cdn.bootcss.com/font-awesome/5.13.0/css/all.css"
+      },
+      {
+        rel: "stylesheet",
+        href:
+          "https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap"
       }
     ]
   },

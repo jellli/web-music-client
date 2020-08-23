@@ -66,7 +66,7 @@ export default {
       if (this.m_id == this.$store.state.currentId) {
         this.lyric.forEach((el, index) => {
           if (el.time === parseInt(this.currentTime)) {
-            this.$refs.text.style.transform = `translateY(-${index * 25 -
+            this.$refs.text.style.transform = `translateY(-${index * 26.8 -
               50}px)`;
             this.index = index;
           }

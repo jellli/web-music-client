@@ -20,6 +20,7 @@
             :followers="profile.follower"
             :currentUsername="params"
             v-if="!isUser"
+            size="medium"
           />
         </div>
         <div class="user-follow">
@@ -86,7 +87,7 @@ export default {
   },
   head() {
     return {
-      title: "个人主页"
+      title: `${this.params}的个人主页`
     };
   },
   computed: {
@@ -227,9 +228,8 @@ export default {
     padding: 10px 35px;
     .username {
       width: 100%;
-      // justify-content: space-between;
-      align-items: center;
       display: flex;
+      align-items: center;
       font-size: 2rem;
       & > * {
         margin-right: 2rem;

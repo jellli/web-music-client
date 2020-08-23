@@ -5,7 +5,7 @@
     @mouseleave="visible = false"
   >
     <div class="music-pic">
-      <img :src="picUrl" />
+      <el-image :src="picUrl" :lazy="true"></el-image>
     </div>
     <div class="music-title">
       <nuxt-link :to="`/${baseUrl}/${id}`" v-if="baseUrl">{{
@@ -23,7 +23,7 @@
         {{ subtitle }}
       </span>
     </div>
-    <!-- 歌曲播放 -->
+    <!-- !TODOs: 歌曲播放 -->
     <playBtn v-if="visible && type === 'song'" :m_id="id">
       <template v-slot:pause>
         <div class="play-btn">
@@ -36,7 +36,7 @@
         </div>
       </template>
     </playBtn>
-    <!-- todo:歌单播放 -->
+    <!-- !TODOs :歌单播放 -->
     <playBtn v-if="visible && type === 'playlist'" :list="playlist">
       <template v-slot:pause>
         <div class="play-btn">
@@ -83,6 +83,13 @@ export default {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition: all ease 0.2s;
+  &:hover {
+    transform: scale(1.2);
+  }
+  &:active {
+    transform: scale(1.1);
+  }
   i {
     font-size: 0.8rem;
   }
@@ -93,7 +100,7 @@ export default {
   // height: 228px;
   padding: 16px;
   background: #282828;
-  border-radius: 15px;
+  border-radius: 8px;
 
   .music-pic {
     width: 133.6px;
