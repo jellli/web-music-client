@@ -5,7 +5,7 @@
     @mouseleave="visible = false"
   >
     <div class="music-pic">
-      <img :src="picUrl" />
+      <el-image :src="picUrl" :lazy="true"></el-image>
     </div>
     <div class="music-title">
       <nuxt-link :to="`/${baseUrl}/${id}`" v-if="baseUrl">{{
