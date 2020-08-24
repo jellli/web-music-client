@@ -4,7 +4,13 @@ export const state = () => ({
   currentId: "",
   userName: null,
   pic: null,
-  user: {},
+  user: {
+    collected_music_list: [],
+    created_musiclist: [],
+    follower: [],
+    following: [],
+    liked_music: []
+  },
   playlist: [],
   currentTime: 0
 });

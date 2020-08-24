@@ -5,7 +5,13 @@
     @mouseleave="visible = false"
   >
     <div class="music-pic">
-      <el-image :src="picUrl" :lazy="true"></el-image>
+      <el-image :src="picUrl" style="width:100%;height:100%;" fit="cover">
+        <div
+          slot="placeholder"
+          v-loading="true"
+          style="width:100%;height:100%;"
+        ></div>
+      </el-image>
     </div>
     <div class="music-title">
       <nuxt-link :to="`/${baseUrl}/${id}`" v-if="baseUrl">{{
@@ -64,7 +70,8 @@ export default {
   },
   data() {
     return {
-      visible: false
+      visible: false,
+      loading: true
     };
   }
 };
