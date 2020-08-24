@@ -74,7 +74,6 @@ export default {
         user_pwd: this.user_pwd
       });
       if (res.data.status === 200) {
-        this.$router.push(`/user/${this.user_name}`);
         this.$store.commit("toggleLoginState");
         this.$store.commit("setUserName", this.user_name);
         const user_res = await this.$axios.post(
@@ -91,6 +90,7 @@ export default {
           localStorage.setItem("userPic", user_res.data[0].user_pic);
           localStorage.setItem("user", JSON.stringify(user_res.data[0]));
         }
+        this.$router.push(`/user/${this.user_name}`);
         this.$message({
           message: "登陆成功！正在跳转...",
           type: "success"

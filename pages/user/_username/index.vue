@@ -185,7 +185,7 @@ export default {
             name: song.ar[0].name,
             baseUrl: "artist"
           },
-          picUrl: al.data.songs[0].al.picUrl,
+          picUrl: al.data.songs[0].al.picUrl + "?param=150y150",
           baseUrl: "song"
         };
         liked_music_temp.push(item);

@@ -65,7 +65,7 @@ export default {
       const title = item.name;
       const subtitle_name = item.ar[0].name;
       const subtitle_id = item.ar[0].id;
-      const picUrl = item.al.picUrl;
+      const picUrl = item.al.picUrl + "?param=150y150";
       hotMusic.push({
         id,
         baseUrl: "song",
