@@ -54,13 +54,27 @@ export default {
     };
   },
   methods: {
+    openFullScreen2() {
+      const loading = this.$loading({
+        lock: true,
+        text: "加载中,请稍后...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      setTimeout(() => {
+        loading.close();
+      }, 3000);
+    },
     async login(e) {
       e.preventDefault();
+
+      this.openFullScreen2();
       const res = await this.$axios.post(`${process.env.BACKEND_URL}/login`, {
         user_name: this.user_name,
         user_pwd: this.user_pwd
       });
       if (res.data.status === 200) {
+        this.$router.push(`/user/${this.user_name}`);
         this.$store.commit("toggleLoginState");
         this.$store.commit("setUserName", this.user_name);
         const user_res = await this.$axios.post(
@@ -72,7 +86,6 @@ export default {
 
         this.$store.commit("setUserPic", user_res.data[0].user_pic);
         this.$store.commit("setUser", user_res.data[0]);
-        this.$router.push(`/user/${this.user_name}`);
         if (this.checked) {
           localStorage.setItem("userName", this.user_name);
           localStorage.setItem("userPic", user_res.data[0].user_pic);

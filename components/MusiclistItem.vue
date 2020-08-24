@@ -5,7 +5,21 @@
     @mouseleave="visible = false"
   >
     <div class="music-pic">
-      <el-image :src="picUrl" style="width:100%;height:100%;" fit="cover">
+      <nuxt-link :to="`/${baseUrl}/${id}`" v-if="baseUrl">
+        <el-image :src="picUrl" style="width:100%;height:100%;" fit="cover">
+          <div
+            slot="placeholder"
+            v-loading="true"
+            style="width:100%;height:100%;"
+          ></div>
+        </el-image>
+      </nuxt-link>
+      <el-image
+        :src="picUrl"
+        style="width:100%;height:100%;"
+        fit="cover"
+        v-else
+      >
         <div
           slot="placeholder"
           v-loading="true"
