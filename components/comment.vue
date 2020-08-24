@@ -81,9 +81,16 @@
               <div class="reply-ctrl">
                 <span>{{ 140 - reply_content.length }}</span>
                 <input
-                  type="button"
+                  type="submit"
                   value="回复"
-                  @click="reply(comment.author, comment.content, comment.c_id)"
+                  @click="
+                    reply(
+                      comment.author,
+                      comment.content,
+                      comment.c_id,
+                      comment.pic
+                    )
+                  "
                 />
               </div>
             </div>
@@ -122,7 +129,7 @@ export default {
     }
   },
   methods: {
-    reply(o_author, o_content, replyId) {
+    async reply(o_author, o_content, replyId, pic) {
       if (this.$store.state.isLogin) {
         const payload = {
           m_id: parseInt(this.m_id),
@@ -131,9 +138,13 @@ export default {
           o_content,
           replyId,
           author: this.$store.state.userName,
-          content: this.reply_content
+          content: this.reply_content,
+          pic
         };
-        this.$axios.post(`${process.env.BACKEND_URL}/create/comment`, payload);
+        await this.$axios.post(
+          `${process.env.BACKEND_URL}/create/comment`,
+          payload
+        );
         this.reply_content = "";
         this.openReply = null;
         this.$message({
@@ -159,7 +170,8 @@ export default {
           o_content: null,
           replyId: null,
           author: this.$store.state.userName,
-          content: this.content
+          content: this.content,
+          pic: this.$store.state.pic
         };
         await this.$axios.post(
           `${process.env.BACKEND_URL}/create/comment`,
