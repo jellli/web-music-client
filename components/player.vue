@@ -282,6 +282,16 @@ export default {
     if (localStorage.getItem("volume")) {
       this.volume = parseFloat(localStorage.getItem("volume"));
     }
+    if (localStorage.getItem("userName")) {
+      this.$store.commit("toggleLoginState");
+      this.$store.commit("setUserName", localStorage.getItem("userName"));
+    }
+    if (localStorage.getItem("userPic")) {
+      this.$store.commit("setUserPic", localStorage.getItem("userPic"));
+    }
+    if (localStorage.getItem("user")) {
+      this.$store.commit("setUser", JSON.parse(localStorage.getItem("user")));
+    }
   }
 };
 </script>

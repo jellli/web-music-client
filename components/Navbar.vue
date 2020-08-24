@@ -146,6 +146,9 @@
 export default {
   methods: {
     logout() {
+      localStorage.removeItem("user");
+      localStorage.removeItem("userPic");
+      localStorage.removeItem("userName");
       this.$store.commit("reset");
       this.$message({ message: "登出成功", type: "success" });
       this.$router.push("/");

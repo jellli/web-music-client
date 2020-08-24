@@ -23,8 +23,10 @@
             class="login-password"
             v-model="user_pwd"
           />
-
         </div>
+        <el-checkbox v-model="checked" style="padding:0 18px"
+          >记住我</el-checkbox
+        >
         <input type="submit" value="登录" class="login-submit" @click="login" />
         <div class="login-forgot-pass">
           <span>
@@ -47,7 +49,8 @@ export default {
   data() {
     return {
       user_name: "",
-      user_pwd: ""
+      user_pwd: "",
+      checked: false
     };
   },
   methods: {
@@ -70,6 +73,11 @@ export default {
         this.$store.commit("setUserPic", user_res.data[0].user_pic);
         this.$store.commit("setUser", user_res.data[0]);
         this.$router.push(`/user/${this.user_name}`);
+        if (this.checked) {
+          localStorage.setItem("userName", this.user_name);
+          localStorage.setItem("userPic", user_res.data[0].user_pic);
+          localStorage.setItem("user", JSON.stringify(user_res.data[0]));
+        }
         this.$message({
           message: "登陆成功！正在跳转...",
           type: "success"
