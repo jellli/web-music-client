@@ -15,15 +15,6 @@
             class="login-username"
             v-model="user_name"
           />
-          <div class="validate-username">
-            <span v-if="includeChinese">用户名不能包含中文字符</span>
-            <span v-else-if="stratWithNum">用户名不能以数字开头</span>
-            <span v-else-if="!validUsername">符号只能使用下划线</span>
-            <span v-else-if="user_name.length === 0"></span>
-            <span v-else-if="user_name.length < 4 || user_name.length > 16"
-              >用户名长度必须大于3小于17位</span
-            >
-          </div>
         </div>
         <div class="input-password">
           <input
@@ -32,13 +23,7 @@
             class="login-password"
             v-model="user_pwd"
           />
-          <div class="validate-password">
-            <span v-if="includeChinese1">密码不能包含中文字符</span>
-            <span v-else-if="user_pwd.length === 0"></span>
-            <span v-else-if="user_pwd.length < 6 || user_name.length > 16">
-              密码长度必须大于6小于17位
-            </span>
-          </div>
+
         </div>
         <input type="submit" value="登录" class="login-submit" @click="login" />
         <div class="login-forgot-pass">
@@ -72,7 +57,6 @@ export default {
         user_name: this.user_name,
         user_pwd: this.user_pwd
       });
-
       if (res.data.status === 200) {
         this.$store.commit("toggleLoginState");
         this.$store.commit("setUserName", this.user_name);
@@ -93,20 +77,6 @@ export default {
       } else {
         this.$message.error("登录失败");
       }
-    }
-  },
-  computed: {
-    includeChinese() {
-      return /[\u4e00-\u9fa5]+/.test(this.user_name);
-    },
-    includeChinese1() {
-      return /[\u4e00-\u9fa5]+/.test(this.user_pwd);
-    },
-    stratWithNum() {
-      return /^\d+/.test(this.user_name);
-    },
-    validUsername() {
-      return /[a-zA-Z0-9_]|^$/.test(this.user_name);
     }
   }
 };

@@ -1,20 +1,68 @@
 <template>
-  <div class="register-form restrainer">
-    <h1>注册</h1>
-    <form>
-      <input type="text" placeholder="用户名" v-model="user_name" />
-      <input type="password" placeholder="密码" v-model="user_pwd" />
-      <input type="password" placeholder="重复密码" v-model="user_pwd1" />
-      <input type="submit" value="注册" @click="register" />
-      <div class="info-msg">
-        <span>
-          已经有账号了吗？
-          <nuxt-link to="/login">登录</nuxt-link>
+  <div class="register-form">
+    <div class="login-form">
+      <p class="login-text">
+        <span class="fa-stack fa-lg">
+          <i class="fa fa-circle fa-stack-2x"></i>
+          <i class="fa fa-lock fa-stack-1x"></i>
         </span>
-      </div>
-    </form>
+      </p>
+      <form class="l_form">
+        <div class="input-user">
+          <input
+            type="text"
+            placeholder="用户名"
+            class="login-username"
+            v-model="user_name"
+          />
+          <div class="validate-username">
+            <span v-if="includeChinese">用户名不能包含中文字符</span>
+            <span v-else-if="stratWithNum">用户名不能以数字开头</span>
+            <span v-else-if="!validUsername">符号只能使用下划线</span>
+            <span v-else-if="user_name.length === 0"></span>
+            <span v-else-if="user_name.length < 4 || user_name.length > 16"
+              >用户名长度必须大于3小于17位</span
+            >
+          </div>
+        </div>
+        <div class="input-password">
+          <input
+            type="password"
+            placeholder="密 码"
+            class="login-password"
+            v-model="user_pwd"
+          />
+          <div class="validate-password">
+            <span v-if="includeChinese1">密码不能包含中文字符</span>
+            <span v-else-if="user_pwd.length === 0"></span>
+            <span v-else-if="user_pwd.length < 6 || user_name.length > 16">
+              密码长度必须大于6小于17位
+            </span>
+          </div>
+        </div>
+        <div class="input-password1">
+          <input
+            type="password"
+            placeholder="重复密码"
+            class="login-password"
+            v-model="user_pwd1"
+          />
+        </div>
+        <input type="submit" value="注册" class="login-submit" @click="register" />
+        <div class="login-forgot-pass">
+          <span>
+            已经有账号了吗？
+            <nuxt-link to="/login">登录</nuxt-link>
+          </span>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
+
+
+
+
 
 <script>
 export default {
@@ -38,6 +86,7 @@ export default {
           message: "用户名和密码不能为空！",
           type: "warning",
         });
+        // todo 检测用户名是否重复
       } else if (this.user_pwd != this.user_pwd1) {
         this.$message({
           message: "密码必须一致",
@@ -51,6 +100,7 @@ export default {
             user_pwd: this.user_pwd,
           }
         );
+        
         this.$message({
           message: "注册成功！",
           type: "success",
@@ -59,45 +109,169 @@ export default {
       }
     },
   },
+   computed: {
+    includeChinese() {
+      return /[\u4e00-\u9fa5]+/.test(this.user_name);
+    },
+    includeChinese1() {
+      return /[\u4e00-\u9fa5]+/.test(this.user_pwd);
+    },
+    stratWithNum() {
+      return /^\d+/.test(this.user_name);
+    },
+    validUsername() {
+      return /[a-zA-Z0-9_]|^$/.test(this.user_name);
+    }
+  }
 };
 </script>
 
+</script>
+
 <style lang="scss" scoped>
-.restrainer {
-  padding: 40px 0;
+.input-user {
+  position: relative;
+  .validate-username {
+    position: absolute;
+    top: 12px;
+    left: 100%;
+    white-space: nowrap;
+  }
+}
+.input-password,
+.input-password1 {
+  position: relative;
+  .validate-password {
+    position: absolute;
+    top: 12px;
+    left: 100%;
+    white-space: nowrap;
+  }
+}
+.l_form {
+  position: relative;
+}
+label.login-username1 {
+  position: absolute;
+  left: 25px;
+  top: 10px;
+  transition: all ease 0.3s;
+}
+.login-username {
+  &:foucus + .login-username1 {
+    transform: translateY(-2rem);
+  }
 }
 .register-form {
-  h1 {
-    text-align: center;
-    color: #939393;
+  display: flex;
+  width: 100vw;
+  height: calc(100vh - 260px);
+  overflow: hidden;
+  animation: hue-rotate 6s infinite;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, #000 220px),
+    url("https://web-music.oss-cn-shenzhen.aliyuncs.com/static/album-backgrounds.jpg")
+      repeat-x center -115px;
+  background-position: top 60px;
+  z-index: -1;
+}
+@keyframes hue-rotate {
+  from {
+    -webkit-filter: grayscale(30%) hue-rotate(0deg);
   }
-  form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  to {
+    -webkit-filter: grayscale(30%) hue-rotate(360deg);
   }
-  input {
-    width: 80%;
-    max-width: 600px;
-    outline: none;
-    border: none;
-    background: #282828;
-    padding: 15px;
-    font-size: 1.2rem;
-    margin: 10px 0;
-    border-radius: 2px;
+}
+.login-form {
+  min-height: 10rem;
+  margin: auto;
+  max-width: 50%;
+  padding: 0.5rem;
+}
+.login-text {
+  color: white;
+  font-size: 1.5rem;
+  margin: 0 auto;
+  max-width: 50%;
+  padding: 0.5rem;
+  text-align: center;
+  .fa-stack-1x {
+    color: black;
   }
-  input[type="submit"] {
-    @extend input;
-    background: #1db954;
-    border-radius: calc((1.3rem + 30px) / 2);
+}
+input {
+  ::-webkit-input-placeholder {
+    color: rgba(255, 255, 255, 0.7);
   }
-  span {
-    color: #939393;
-    a {
-      color: #1db954;
+  ::-moz-placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  :-ms-input-placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  &:focus {
+    outline: 0 transparent solid;
+    ::-webkit-input-placeholder {
+      color: rgba(0, 0, 0, 0.7);
     }
+    ::-moz-placeholder {
+      color: rgba(0, 0, 0, 0.7);
+    }
+    :-ms-input-placeholder {
+      color: rgba(0, 0, 0, 0.7);
+    }
+  }
+}
+.login-username,
+.login-password {
+  background: transparent;
+  border: 0 solid;
+  border-bottom: 1px solid rgba(white, 0.5);
+  color: white;
+  display: block;
+  margin: 1rem;
+  padding: 0.5rem;
+  transition: 250ms background ease-in;
+  width: calc(100% - 3rem);
+  font-size: 1.2rem;
+  &:focus {
+    background: white;
+    color: black;
+    transition: 250ms background ease-in;
+  }
+}
+.login-submit {
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  display: block;
+  margin: 1rem auto;
+  min-width: 1px;
+  padding: 0.25rem 1rem;
+  transition: 250ms background ease-in;
+  font-size: 1.2rem;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    background: white;
+    color: black;
+    transition: 250ms background ease-in;
+  }
+}
+.login-forgot-pass {
+  color: white;
+  cursor: pointer;
+  display: block;
+  font-size: 75%;
+  left: 0;
+  opacity: 0.6;
+  padding: 0.5rem;
+  position: absolute;
+  text-align: center;
+  //text-decoration: none;
+  width: 100%;
+  &:hover {
+    opacity: 1;
   }
 }
 </style>
