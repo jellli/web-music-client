@@ -86,7 +86,6 @@ export default {
           message: "用户名和密码不能为空！",
           type: "warning",
         });
-        // todo 检测用户名是否重复
       } else if (this.user_pwd != this.user_pwd1) {
         this.$message({
           message: "密码必须一致",
@@ -100,12 +99,19 @@ export default {
             user_pwd: this.user_pwd,
           }
         );
-        
-        this.$message({
-          message: "注册成功！",
-          type: "success",
-        });
-        this.$router.push(`/login`);
+        if(res.data.status === 201){
+
+          this.$message({
+            message: "注册成功！",
+            type: "success",
+          });
+          this.$router.push(`/login`);
+        }else if(res.data.status === 409){
+          this.$message({
+            message: "用户名已被注册",
+            type: "error",
+          });
+        }
       }
     },
   },
