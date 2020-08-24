@@ -23,33 +23,29 @@
         <div class="right-side">
           <div v-if="detial">
             <sList :detial="detial" :creator_pic="creator_pic" />
-            <div v-loading="loading" style="min-height: 100px">
-              <div
-                style="padding:0 20px"
-                v-if="songs !== null && songs.length > 0"
-              >
-                <songsList
-                  :songs="
-                    songs.slice(
-                      (currentPage - 1) * 8,
-                      (currentPage - 1) * 8 + 7
-                    )
-                  "
-                  :list_id="current_list_id"
-                  @reload="reloadAll"
-                />
-                <el-pagination
-                  :hide-on-single-page="true"
-                  class="pagination"
-                  :total="songs.length"
-                  :current-page.sync="currentPage"
-                  background
-                ></el-pagination>
-              </div>
-              <h2 v-else-if="songs != null && songs.length === 0">
-                该歌单里还没添加任何歌曲
-              </h2>
+
+            <div
+              style="padding:0 20px"
+              v-if="songs !== null && songs.length > 0"
+            >
+              <songsList
+                :songs="
+                  songs.slice((currentPage - 1) * 8, (currentPage - 1) * 8 + 7)
+                "
+                :list_id="current_list_id"
+                @reload="reloadAll"
+              />
+              <el-pagination
+                :hide-on-single-page="true"
+                class="pagination"
+                :total="songs.length"
+                :current-page.sync="currentPage"
+                background
+              ></el-pagination>
             </div>
+            <h2 v-else style="padding:0 20px">
+              该歌单里还没添加任何歌曲
+            </h2>
           </div>
           <div v-if="edit">
             <editList
@@ -322,13 +318,12 @@ export default {
   },
   data() {
     return {
-      loading: false,
       currentPage: 1,
       isOpen: true,
       src: null,
       detial: null,
       edit: null,
-      songs: null,
+      songs: [],
       pic_url: null,
       creator_pic: null,
       user_created_list: null,
@@ -380,7 +375,6 @@ export default {
       if (listId !== this.current_list_id || force) {
         this.edit = null;
         this.songs = null;
-        this.loading = true;
         // 获取用户创建的歌单详情
         const detial = await this.$axios.post(
           `${process.env.BACKEND_URL}/get/musiclist_detail`,
@@ -412,7 +406,6 @@ export default {
             };
             temp.push(item);
           });
-          this.loading = false;
           this.songs = temp;
           this.current_list_id = listId;
         }
@@ -420,7 +413,6 @@ export default {
     },
     async getLikedDetial() {
       this.songs = null;
-      this.loading = true;
       this.edit = null;
       this.detial = {
         liked: true,
@@ -454,7 +446,6 @@ export default {
         });
       }
       this.songs = temp;
-      this.loading = false;
       this.current_list_id = "liked";
     },
     reloadAll(reloadDetial = true) {
