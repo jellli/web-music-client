@@ -1,3 +1,4 @@
+const CompressionPlugin = require("compression-webpack-plugin");
 export default {
   mode: "universal",
   /*
@@ -71,7 +72,26 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    vendor: ["element-ui"],
+    plugins: [
+      new CompressionPlugin({
+        test: /\.js$|\.html$|\.css/, // 匹配文件名
+
+        threshold: 10240, // 对超过10kb的数据进行压缩
+
+        deleteOriginalAssets: false // 是否删除原文件
+      })
+    ],
+    // analyze: true,
+    // assetFilter: function(assetFilename) {
+    //   return assetFilename.endsWith(".js");
+    // },
+    optimization: {
+      splitChunks: {
+        minSize: 10000,
+
+        maxSize: 250000
+      }
+    },
     extend(config, ctx) {}
   }
 };
