@@ -96,8 +96,10 @@ export default {
           message: "登陆成功！正在跳转...",
           type: "success"
         });
+      } else if (res.data.status === 409) {
+        this.$message.error("密码错误，请重新输入");
       } else {
-        this.$message.error("登录失败");
+        this.$message.error("用户名不存在");
       }
     }
   }
