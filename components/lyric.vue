@@ -3,7 +3,7 @@
     <ul ref="text" class="text" v-if="lyric.length > 0">
       <li
         v-for="(item, i) in lyric"
-        :key="item.time"
+        :key="i"
         :style="
           index === i
             ? `font-size:22px;color:#1db954`
